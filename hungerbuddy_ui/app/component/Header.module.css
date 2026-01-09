@@ -1,0 +1,39 @@
+.maincontainer{
+   width: 100vw;
+    
+   
+}
+.stylebar{
+ width: 100%;
+ height:auto; 
+ display: flex;
+ flex-direction: 'column';
+}
+.styletext{
+   display: flex;
+   flex-direction: row;
+   padding: 15px;
+   color: black;
+   justify-content: space-between;
+   background-color: rgb(240, 247, 247);
+   width: 100%;
+
+}
+.styleone{
+   font-size: clamp(0.3rem, 0.7vh + 0.4rem, 0.8rem);
+   font-weight: bold;
+
+}
+.styletwo
+{
+   font-size: clamp(0.6rem, 1vw + 0.6rem, 2.5rem); 
+   font-weight: bolder;
+}
+.stylethree
+{
+   font-size: clamp(0.3rem, 0.7vh + 0.4rem, 0.8rem);
+   font-weight: 900;
+}
+.stylename{
+font-size: clamp(0.3rem, 0.7vh + 0.4rem, 0.8rem);
+}

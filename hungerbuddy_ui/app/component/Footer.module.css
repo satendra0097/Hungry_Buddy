@@ -1,0 +1,130 @@
+.mainbox {
+    width: 100%;
+    height: auto;
+    background-color: #f0f0f5;
+    margin-top: 2%;
+    display: flex;
+    flex-direction: column;
+}
+
+.box {
+    width: 100%;
+    height: auto;
+    padding-left: 5%;
+    padding-top: 2%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding-right: 5%;
+    /* margin-bottom: 1%; */
+    border-bottom: 1px solid #85878c;
+}
+
+.leftone {
+    color: #000;
+    padding-top: 7%;
+    font-size: clamp(.5rem, 1vw + .5rem, 2rem);
+    font-weight: bold;
+}
+
+.leftsecond {
+    color: #6e7372;
+    line-height: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.leftthree {
+    color: #6e7372;
+    line-height: 2;
+}
+
+.leftfour {
+    color: #6e7372;
+    line-height: 2;
+}
+
+.leftfive {
+    color: #6e7372;
+    line-height: 2;
+}
+
+.text {
+    font-size: clamp(.4rem, 1vh + 0.5rem, 2rem);
+    display: flex;
+    flex-direction: column;
+}
+
+.heading {
+    font-size: clamp(.5rem, 1vw + .5rem, 2rem);
+    color: #000;
+    /* font-weight:bold; */
+}
+.image {
+    width: 20px;
+    height: 20px;
+}
+.last {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 3%;
+    margin-top: 1%;
+    padding-left: 30px;
+    width: 50%;
+   margin-left: 25%;
+}
+.lasttext {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 1%;
+    color: #45484e;
+}
+.btn {
+    padding: 10px;
+    background-color: #000;
+    color :#fff;
+    border-radius:10px;
+    font-size: 1rem;
+}
+@media (min-width: 300px) and (max-width: 900px){
+    .box {
+        width: 100%;
+        padding-top: 2%;
+        justify-content: space-between;
+    }
+
+    .leftone {
+        color: #000;
+        padding-top: 10%;
+        font-size: .5rem;
+
+    }
+    .heading {
+        font-size: .5rem;
+    }
+    .text {
+        font-size: .4rem;
+    }
+    .image {
+    width: 10px;
+    height: 10px;
+}
+.last {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 3%;
+    margin-top: 2%;
+    width: 100%;
+    margin-left: 0%;
+}
+.lasttext {
+    font-size: .6rem;
+   
+}
+.btn {
+    padding: 5px;
+    border-radius:5px;
+    font-size: .3rem;
+}
+
+}
