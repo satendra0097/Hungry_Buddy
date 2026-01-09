@@ -69,6 +69,7 @@ export default function AdminLogin() {
     var body = { emailid:emailId, password:password };
     var res = await postData("admin/chk_admin_login", body);
     // alert('hiiii')
+    //SDJASD
     if (res.status) { 
       // alert(JSON.stringify(res))//
       localStorage.setItem("Token",res.token)
