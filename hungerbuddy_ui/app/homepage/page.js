@@ -8,7 +8,7 @@ import FooterComponent from "../component/FooterComponent"
 import Header from "../component/Header"
 import { useState, useEffect } from "react"
 import SnacksComponent from "../component/SnacksComponent"
-import { postData,getData } from "../services/FatchNodeServices"
+import { postData,getData } from "../services/FetchNodeServices"
 
 export default function HomePage() {
 

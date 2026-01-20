@@ -5,7 +5,7 @@ import styles from "./Header.module.css";
 import Image from "next/image";
 import SearchBar from "./SearchBar";
 import CategoryComponent from "./CategoryComponent";
-import {getData} from "../services/FatchNodeServices"
+import {getData} from "../services/FetchNodeServices"
 
 export default function Header() {
   const [categoryList,setCategoryList]=useState([])

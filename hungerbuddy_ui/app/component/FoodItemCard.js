@@ -1,9 +1,11 @@
 'use client'
 
 import styles from './FoodItemCard.module.css'
-import { serverURL } from '../services/FatchNodeServices';
-export default function FoodItemCard({data}) {
-const mycolor=["#ffeaa7","#fabla0","#dff9fb","#686de0","#22a6b3","#78e08f","#fa983a","#6a89cc","#f8c291"]
+import { serverURL } from '../services/FetchNodeServices';
+import { useRouter } from 'next/navigation';
+
+export default function FoodItemCard({ data }) {
+  const mycolor = ["#ffeaa7", "#fabla0", "#dff9fb", "#686de0", "#22a6b3", "#78e08f", "#fa983a", "#6a89cc", "#f8c291"]
 
   // const data = [
   //   { fooditemid: 1, fooditemname: 'Biryani', fooditemtype: 'NonVeg', fooditemtaste: 'Spicy', ingredients: 'Rice,Vegitables', fullprice: 400, halfprice: 270, offerprice: 299, picture: 'biryani.jpg', rating: 5.0, status: 'Available' },
@@ -11,18 +13,15 @@ const mycolor=["#ffeaa7","#fabla0","#dff9fb","#686de0","#22a6b3","#78e08f","#fa9
   //   { fooditemid: 3, fooditemname: 'Veg Maggi', fooditemtype: 'Veg', fooditemtaste: 'Spicy', ingredients: 'Rice,Vegitables', fullprice: 120, halfprice: 70, offerprice: 100, picture: 'maggi.png', rating: 5.0, status: 'Available' },
   //   // { fooditemid: 4, fooditemname: 'Veg Pizza', fooditemtype: 'Veg', fooditemtaste: 'Medium', ingredients: 'Rice,Vegitables', fullprice: 300, halfprice: 0, offerprice: 180, picture: 'pizzaa.png', rating: 5.0, status: 'Available' }
   // ];
-
+  var navigate = useRouter()
   const showFood = () => {
     return data?.map((item) => {
-      const percent =
-        item.offerprice > 0
-          ? ((item.fullprice - item.offerprice) / item.fullprice) * 100
-          : 0;
-
+      var percent = (item.fullprice - item.offerprice) / item.fullprice * 100
       return (
-        <div className={styles.card} key={item.fooditemid}    >
-          <div className={styles.imageContainer}style={{ background: mycolor[Math.floor(Math.random() * mycolor.length)]
-            }} >
+        <div key={item.fooditemid} className={styles.card} onClick={() => navigate.push(`/productdetailcomponent/${item.fooditemid}`)}  >
+          <div className={styles.imageContainer} style={{
+            background: mycolor[Math.floor(Math.random() * mycolor.length)]
+          }} >
             <div className={styles.imageStyle}>
               <img src={`${serverURL}/images/${item.picture}`}
                 alt={item.fooditemname}
@@ -32,7 +31,7 @@ const mycolor=["#ffeaa7","#fabla0","#dff9fb","#686de0","#22a6b3","#78e08f","#fa9
 
             {item.offerprice > 0 && (
               <div className={styles.discountBadge}>
-                {percent.toFixed(0)}% OFF UPTO ₹{item.fullprice - item.offerprice}
+                {item.offerprice == 0 ? <></> : <>{percent.toFixed(0)}% OFF UPTO ₹{item.fullprice - item.offerprice}</>}
               </div>
             )}
           </div>
@@ -62,18 +61,7 @@ const mycolor=["#ffeaa7","#fabla0","#dff9fb","#686de0","#22a6b3","#78e08f","#fa9
               <span className={styles.deliveryTime}>30-35 mins</span>
             </div>
 
-            <p className={styles.location}>
-              {item.offerprice === 0 ? (
-                <span style={{ fontWeight: 'bold' }}>₹{item.fullprice}</span>
-              ) : (
-                <>
-                  <span style={{ fontWeight: 'bold', marginRight: 6 }}>
-                    ₹{item.offerprice}
-                  </span>
-                  <s>₹{item.fullprice}</s>
-                </>
-              )}
-            </p>
+            <p className={styles.location}>{item.offerprice == 0 ? <span style={{ fontWeight: 'bold', color: '#000' }}>₹{item.fullprice}</span> : <><span style={{ fontWeight: 'bold', marginRight: '2%', color: '#000' }}>₹{item.offerprice}</span> <s>₹{item.fullprice}</s></>}</p>
 
             <p className={styles.cuisine}>North Indian</p>
           </div>

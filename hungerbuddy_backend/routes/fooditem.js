@@ -67,7 +67,7 @@ router.get("/fetch_all_category", function (req, res) {
         data: result,
       });
     }
- });
+  });
 });
 
 
@@ -97,22 +97,22 @@ router.get('/fetch_all_fooditems', function (req, res, next) {
 
 router.post('/editfood', function (req, res, next) {
   try {
-    console.log(req.body)
-    pool.query ('UPDATE fooditems SET foodcategoryid = ?, fooditemname = ?,fooditemtype = ?,fooditemtaste = ?,ingridients = ?,fullprice = ?,halfprice = ?,offerprice = ?,status = ?,rating = ? WHERE fooditemid = ?',[req.body.foodcategoryid,
-          req.body.fooditemname,
-          req.body.fooditemtype,
-          req.body.fooditemtaste,
-          req.body.ingridients,
-          req.body.fullprice,
-          req.body.halfprice,
-          req.body.offerprice,
-          req.body.status,
-          req.body.ratings,
-        req.body.fooditemid],
-       
+    pool.query('UPDATE fooditems SET foodcategoryid = ?, fooditemname = ?,fooditemtype = ?,fooditemtaste = ?,ingridients = ?,fullprice = ?,halfprice = ?,offerprice = ?,status = ?,rating = ? WHERE fooditemid = ?',
+      [req.body.foodcategoryid,
+      req.body.fooditemname,
+      req.body.fooditemtype,
+      req.body.fooditemtaste,
+      req.body.ingridients,
+      req.body.fullprice,
+      req.body.halfprice,
+      req.body.offerprice,
+      req.body.status,
+      req.body.ratings,
+      req.body.fooditemid],
+
 
       function (error, result) {
-         
+
         if (error) {
 
           console.log(error)
@@ -136,7 +136,7 @@ router.post('/delete_fooditem', function (req, res, next) {
   try {
     pool.query(
       'DELETE FROM fooditems WHERE fooditemid = ?',
-      [req.body.fooditemid.fooditemid], 
+      [req.body.fooditemid.fooditemid],
       (error, result) => {
         if (error) {
           console.log(error);
@@ -165,8 +165,8 @@ router.post('/delete_fooditem', function (req, res, next) {
 
 router.post('/edit_picture', upload.single(''), function (req, res, next) {
   try {
-      console.log(req.body);
-    pool.query('update fooditems set categoryicon=?,createddate=?,createdtime=?,userid=? where categoryid=?', [req.file.filename, req.body.createddate, req.body.createdtime, req.body.userid,  req.body.categoryid], function (error, result) {
+    console.log(req.body);
+    pool.query('update fooditems set categoryicon=?,createddate=?,createdtime=?,userid=? where categoryid=?', [req.file.filename, req.body.createddate, req.body.createdtime, req.body.userid, req.body.categoryid], function (error, result) {
       if (error) {
         console.log(error)
         res.status(500).json({ status: false, message: 'Database Error Please Contact Backend Team...' })

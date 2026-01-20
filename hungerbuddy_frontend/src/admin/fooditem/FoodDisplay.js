@@ -73,8 +73,8 @@ const useStyle = makeStyles((theme) => ({
 export default function FoodDisplay({ refresh, setRefresh }) {
   const classes = useStyle();
   var branch = JSON.parse(localStorage.getItem('Admin'))
-  console.log("gfcjhgujh",branch);
-  
+  console.log("gfcjhgujh", branch);
+
   const [foodList, setFoodList] = useState([]);
   const [open, setOpen] = useState(false);
   /******************* */
@@ -165,7 +165,8 @@ export default function FoodDisplay({ refresh, setRefresh }) {
         "halfprice": Halfprice,
         "offerprice": Offerprice,
         "status": Statuse,
-        "ratings": Ratings
+        "ratings": Ratings,
+        "fooditemid": foodItemId,
         // "picture", Pictures.bytes);
       }
       var response = await postData("fooditem/editfood", body)
@@ -178,6 +179,7 @@ export default function FoodDisplay({ refresh, setRefresh }) {
           timer: 3000,
           toast: true,
         });
+        fetchAllFoodItem()
       } else {
         Swal.fire({
           position: "top-end",
@@ -368,7 +370,7 @@ export default function FoodDisplay({ refresh, setRefresh }) {
                 <TextField
                   onChange={(e) => setOfferprice(e.target.value)}
                   label="Offer Price"
-                  
+
                   fullWidth
                   size="small"
                   value={Offerprice}
@@ -384,7 +386,7 @@ export default function FoodDisplay({ refresh, setRefresh }) {
                     value={Statuse}
                     onChange={(e) => setStatuse(e.target.value)}
                   >
-                    
+
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
@@ -399,7 +401,7 @@ export default function FoodDisplay({ refresh, setRefresh }) {
                 name="ratings"
                 value={Ratings}
                 onChange={(event, newValue) => setRatings(newValue)}
-                
+
               />
             </Grid>
 
@@ -479,7 +481,7 @@ export default function FoodDisplay({ refresh, setRefresh }) {
       });
     }
   };
-  
+
   const saveCancelButton = () => {
     return (
       <div
@@ -506,8 +508,8 @@ export default function FoodDisplay({ refresh, setRefresh }) {
       </div>
     );
   };
-//fooditemid, branchid, foodcategoryid, fooditemname, fooditemtype, ingridients, fullprice, halfprice, status, rating, picture, fooditemtaste, offerprice
-  const handleOpenDialog = (rowData, state) => {  
+  //fooditemid, branchid, foodcategoryid, fooditemname, fooditemtype, ingridients, fullprice, halfprice, status, rating, picture, fooditemtaste, offerprice
+  const handleOpenDialog = (rowData, state) => {
     setDialogState(state);
     setFoodItemId(rowData.fooditemid);
     setBrancid(rowData.branchid);
@@ -545,22 +547,22 @@ export default function FoodDisplay({ refresh, setRefresh }) {
     );
   };
   const handleDelete = async (fooditemid) => {
-  Swal.fire({
-    title: "Do you want to delete the selected food item?",
-    showCancelButton: true,
-    confirmButtonText: "Delete",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      const response = await postData("fooditem/delete_fooditem", {
-        fooditemid,
-      });
-      Swal.fire(response.message);
-      fetchAllFoodItem();
-    } else if (result.isDenied) {
-      Swal.fire("Changes are not saved", "", "info");
-    }
-  });
-};
+    Swal.fire({
+      title: "Do you want to delete the selected food item?",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await postData("fooditem/delete_fooditem", {
+          fooditemid,
+        });
+        Swal.fire(response.message);
+        fetchAllFoodItem();
+      } else if (result.isDenied) {
+        Swal.fire("Changes are not saved", "", "info");
+      }
+    });
+  };
 
 
   const displayFoodItem = () => {

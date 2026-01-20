@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import { serverURL } from "../services/FatchNodeServices";
+import { serverURL } from "../services/FetchNodeServices";
 
 export default function SnacksComponent({ data = [] }) {  
   const theme = useTheme();
