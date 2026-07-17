@@ -6,8 +6,8 @@ import { serverURL } from "../services/FetchNodeServices";
 export default function ProductRateComponent({data}) {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
-  //const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL
-  console.log({data})
+
+  
   return (
     <div
       style={{
@@ -30,7 +30,7 @@ export default function ProductRateComponent({data}) {
         <div style={{ display: "flex", flexDirection: "row", gap: 4 }}>
           <Rating
             name="simple-controlled"
-            value={parseInt(data[0]?.rating)}
+            value={parseInt(data?.rating)}
 
           />
         </div>
@@ -42,7 +42,7 @@ export default function ProductRateComponent({data}) {
             zIndex: 1,
           }}
         >
-          ({data[0]?.rating})
+          ({data?.rating})
         </div>
       </div>
 
@@ -63,7 +63,7 @@ export default function ProductRateComponent({data}) {
             zIndex: 1,
           }}
         >
-       {data[0]?.categoryname}
+       {data?.categoryname}
         </div>
         <div
           style={{
@@ -72,8 +72,9 @@ export default function ProductRateComponent({data}) {
             zIndex: 1,
           }}
         >
-          {data[0]?.fooditemname}
+          {data?.fooditemname}
         </div>
+        
         <div
           style={{
             fontSize: matches ? "24px" : "30px",
@@ -81,7 +82,7 @@ export default function ProductRateComponent({data}) {
             zIndex: 1,
           }}
         >
-        {data[0]?.offerprice==0?<span style={{fontWeight:'bold',color:'#000'}}>₹{data[0]?.fullprice}</span>:<><span style={{fontWeight:'bold',marginRight:'2%',color:'#000'}}>{data[0]?.offerprice}</span> <s>₹{data[0]?.fullprice}</s></>}
+          {data.offerprice==0?<span style={{fontWeight:'bold',color:'#000'}}>₹{data.fullprice}</span>:<><span style={{fontWeight:'bold',marginRight:'2%',color:'#000'}}>₹{data.offerprice}</span> <s>₹{data.fullprice}</s></>}
         </div>
 
         <div
@@ -96,16 +97,15 @@ export default function ProductRateComponent({data}) {
 
         <div
           style={{
-            fontSize: matches ? "14px" : "20px",
+            fontSize: matches ? "12px" : "14px",
             fontWeight: 400,
             marginTop: matches ? 15 : 25,
             zIndex: 1,
             lineHeight: 1.5,
+            color:'black'
           }}
         >
-          The snack that’s always invited to the party! Lightly peppered, just a
-          hint of mint, and crunchy—Aloo Sev makes everything better, from chai
-          time to movie night.
+          {data?.description}
         </div>
       </div>
     </div>

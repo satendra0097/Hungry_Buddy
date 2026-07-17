@@ -7,18 +7,19 @@ import { useTheme } from "@mui/material/styles"
 import { serverURL } from "../services/FetchNodeServices";
 
 
-export default function ProductImageComponent({data}) {
-    // alert("xxxx"+JSON.stringify(data))
+export default function ProductImageComponent({ data, pictures }) {
+  // alert("xxxx"+JSON.stringify(data))
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
-   //const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+  //const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+  const images = pictures?.picture ? pictures.picture.split(",") : []
 
 
-  const images = [
-    `${serverURL}/images/aloosev1.png`,
-    `${serverURL}/images/aloosev2.png`,
-    `${serverURL}/images/aloosev3.png`,
-  ];
+  // const images = [
+  //   `${serverURL}/images/aloosev1.png`,
+  //   `${serverURL}/images/aloosev2.png`,
+  //   `${serverURL}/images/aloosev3.png`,
+  // ];
 
   const settings = {
     dots: false,
@@ -28,7 +29,16 @@ export default function ProductImageComponent({data}) {
     slidesToScroll: 1,
     arrows: false,
   };
-    // console.log(data)
+  
+  const showpictures = () => {
+    return pictures?.picture.map((item) => {
+      <img
+        src={'${serverURL}/images/$[item]'}
+        alt=""
+        style={{ width: 300, height: 300, borderRadius: 25 }}
+      />
+    })
+  }
   return (
     <div style={{ marginTop: 30, marginLeft: matches ? "0" : "10%" }}>
       {matches ? (
@@ -47,7 +57,7 @@ export default function ProductImageComponent({data}) {
                     height: "auto",
                     borderRadius: 15,
                     // margin: "0 auto",
-                  
+
                   }}
                 />
               </div>
@@ -57,10 +67,10 @@ export default function ProductImageComponent({data}) {
       ) : (
 
         // Original wala !!
-      
+
         <div>
           <img
-           src={`${serverURL}/images/${data[0]?.picture}`}
+            src={`${serverURL}/images/${data?.picture}` || `${serverURL}/images/aloosev1.png`}
             alt=""
             style={{
               width: 626,
@@ -71,12 +81,17 @@ export default function ProductImageComponent({data}) {
           />
           <div style={{ display: "flex", gap: 20 }}>
             <img
-              src={images[1]}
+              src={images[0]
+                ? `${serverURL}/images/${images[0]}`
+                : `${serverURL}/images/aloosev2.png`}
               alt=""
               style={{ width: 300, height: 300, borderRadius: 25 }}
             />
+
             <img
-              src={images[2]}
+              src={images[1]
+                ? `${serverURL}/images/${images[1]}`
+                : `${serverURL}/images/aloosev3.png`}
               alt=""
               style={{ width: 300, height: 300, borderRadius: 25 }}
             />

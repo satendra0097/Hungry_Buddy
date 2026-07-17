@@ -8,7 +8,7 @@ import { Divider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
-export default function ProductInfoComponent() { 
+export default function ProductInfoComponent({data}) { 
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down("md"));
     
@@ -47,12 +47,13 @@ export default function ProductInfoComponent() {
                         </Typography>
                     </AccordionSummary>
                     <AccordionDetails style={{ paddingLeft: 0 }}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex.
+          {data?.ingredients}
+
                     </AccordionDetails>
                 </Accordion>
 
                 
-                <Divider style={{ 
+                {/* <Divider style={{ 
                     marginTop: matches ? 20 : 30,
                     backgroundColor: "#cebdd8ff",
                     width: matches ? "93%" : "40%",
@@ -84,7 +85,7 @@ export default function ProductInfoComponent() {
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex.
                         </AccordionDetails>
                     </Accordion>
-                </div>
+                </div> */}
 
             
                <Divider style={{ 
@@ -117,7 +118,16 @@ export default function ProductInfoComponent() {
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails style={{ paddingLeft: 0 }}>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex.
+                     
+  <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                        <img style={{width:'20px',height:'20px'}} src={'/images/linkedin-sign.png'} />
+                        <img style={{width:'20px',height:'20px'}} src={'/images/social.png'}  />
+                        <img style={{width:'20px',height:'20px'}} src={'/images/facebook.png'} />
+                        <img style={{width:'20px',height:'20px'}} src={'/images/instagram.png'}  />
+                        <img style={{width:'20px',height:'20px'}} src={'/images/pinterest-logo.png'}  />
+                    </div>
+
+
                         </AccordionDetails>
                     </Accordion>
                 </div>

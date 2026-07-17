@@ -7,9 +7,11 @@ import { useRef, useState } from "react";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { serverURL } from "../services/FetchNodeServices";
-
-export default function DrinksComponent({ data = [] }) {   // ✅ FIX 1
+import { useRouter } from "next/navigation";
+export default function DrinksComponent({ data = [] }) 
+{  
   const theme = useTheme();
+  var navigate = useRouter();
   const matches = useMediaQuery(theme.breakpoints.down('md'));
 
   const settings = {
@@ -24,8 +26,13 @@ export default function DrinksComponent({ data = [] }) {   // ✅ FIX 1
   const sliderRef = useRef(null);
   const [index, setIndex] = useState(0);
 
-  const handleCategoryClick = (cid) => {
-    setIndex(cid);
+
+   
+
+  const handleCategoryClick = (fid) => {
+    setIndex(fid);
+
+ navigate.push(`/productdetailcomponent/${fid}`)
   };
 
   function showCategory() {

@@ -1,0 +1,36 @@
+.pageContainer {
+  min-height: 100vh;
+  background-color: #fdfefe;
+}
+
+.pageTitle {
+  font-weight: 700;
+  color: #141414;
+  margin: 0;
+}
+
+.mainContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.rightSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.placeOrderBtn {
+  background-color: #0078ad !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  padding: 14px 24px !important;
+  border-radius: 28px !important;
+  text-transform: none !important;
+  box-shadow: none !important;
+}
+
+.placeOrderBtn:hover {
+  background-color: #0c5273 !important;
+}

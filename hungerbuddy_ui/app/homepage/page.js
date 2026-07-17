@@ -6,17 +6,19 @@ import DrinksComponent from "../component/DrinksComponent"
 import FoodItemCard from "../component/FoodItemCard"
 import FooterComponent from "../component/FooterComponent"
 import Header from "../component/Header"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import SnacksComponent from "../component/SnacksComponent"
-import { postData,getData } from "../services/FetchNodeServices"
+import { postData, getData } from "../services/FetchNodeServices"
+import { useReducer } from "react"
+
 
 export default function HomePage() {
-
+  const aboutRef = useRef(null);
   const [snacksList, setSnacksList] = useState([])
   const [drinkList, setDrinkList] = useState([])
-const [foodList, setFoodList] = useState([])
+  const [foodList, setFoodList] = useState([])
 
-  
+
   const fetchAllFood = async (categoryName) => {
     try {
       const response = await postData(
@@ -24,6 +26,7 @@ const [foodList, setFoodList] = useState([])
       )
 
       if (response?.status) {
+
 
         if (categoryName === 'Snacks') setSnacksList(response.data || [])
         else if (categoryName === 'Drinks') setDrinkList(response.data || [])
@@ -36,14 +39,9 @@ const [foodList, setFoodList] = useState([])
 
 
   const fetchAllFoodItems = async (cid) => {
-   
-      var response = await getData("users/fetch_all_fooditems");
-
-  setFoodList(response.data);
-   
+    var response = await getData("users/fetch_all_fooditems");
+    setFoodList(response.data);
   }
-
-
 
   useEffect(() => {
     fetchAllFood('Snacks')
@@ -53,7 +51,7 @@ const [foodList, setFoodList] = useState([])
 
   return (
     <div>
-      <Header />
+      <Header dataRef={aboutRef} foodList={foodList} setFoodList={setFoodList} />
 
       <div style={{ width: '100%', background: '#f1eeeeff' }}>
         <SnacksComponent data={snacksList} />
@@ -63,9 +61,10 @@ const [foodList, setFoodList] = useState([])
         <DrinksComponent data={drinkList} />
       </div>
 
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <div ref={aboutRef} >
         <FoodItemCard data={foodList} />
       </div>
+
 
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <AdvertisementComponent />

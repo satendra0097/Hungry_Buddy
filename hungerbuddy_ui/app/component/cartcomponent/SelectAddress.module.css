@@ -1,0 +1,114 @@
+.pageContainer {
+  min-height: 100vh;
+  background-color: #fdfefe;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.container {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.closeButton {
+  width: 40px;
+  height: 40px;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  margin: 0;
+  margin-top: 8px;
+}
+
+.addressList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.addressCard {
+  background-color: #fff;
+  border-radius: 16px;
+  border: 2px solid #e8e8e8;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addressCard:hover {
+  border-color: #0078ad;
+}
+
+.addressCardSelected {
+  border-color: #0078ad;
+  box-shadow: 0 2px 8px rgba(0, 120, 173, 0.15);
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nameContainer {
+  display: flex;
+  align-items: center;
+}
+
+.name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.editButton {
+  width: 36px;
+  height: 36px;
+}
+
+.addressDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.addressText {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.phoneText {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+  margin-top: 4px;
+}
+
+.deliverButton {
+  box-shadow: none !important;
+}

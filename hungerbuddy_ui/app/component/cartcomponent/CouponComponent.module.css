@@ -1,0 +1,99 @@
+.card {
+  border-radius: 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  margin-bottom: 16px;
+  background-color: #fff;
+}
+
+.card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.couponIcon {
+  color: #4caf50;
+  font-size: 24px;
+}
+
+.text {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.arrowIcon {
+  color: #757575;
+}
+
+/* Drawer Styles */
+.drawerPaper {
+  width: 100%;
+  max-width: 400px; /* Adjust as needed for specific design */
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.drawerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.drawerTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.inputContainer {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+/* Empty State Styles */
+.emptyContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 60px;
+  gap: 16px;
+}
+
+.emptyIconContainer {
+  width: 50px;
+  height: 50px;
+  background-color: #616161;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyIcon {
+  color: white;
+  font-size: 24px !important;
+}
+
+.emptyText {
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 500;
+}

@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import "./header.css";
+import "../app/globals.css";
+import ReduxProvider from './storage/ReduxProvider';
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["Poppins"],
@@ -21,15 +21,15 @@ export default function RootLayout({ children }) {
     <html lang="en">
 
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-      <header><h1> Numeric Gwalior</h1></header>
-     
-      
-        {children}
+        {/* <header><h1> Numeric Gwalior</h1></header> */}
+        <ReduxProvider>
 
-         <footer>
-          <h4>All copy rights reserve Numeric</h4>
-          </footer>
-          
+          {children}
+        </ReduxProvider>
+        <footer>
+         
+        </footer>
+
       </body>
     </html>
   );

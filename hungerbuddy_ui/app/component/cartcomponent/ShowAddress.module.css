@@ -1,0 +1,68 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #141414;
+  margin: 0;
+}
+
+.addressCard {
+  background-color: #fff;
+  border-radius: 24px;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nameContainer {
+  display: flex;
+  align-items: center;
+}
+
+.name {
+  font-size: 18px;
+  font-weight: 500;
+  color: #141414;
+}
+
+.editButton {
+  width: 36px;
+  height: 36px;
+}
+
+.addressDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.addressText {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000000a6;
+}
+
+.phoneText {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000000a6;
+}

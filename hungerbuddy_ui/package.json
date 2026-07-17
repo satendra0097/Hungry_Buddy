@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 4000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 4000",
     "lint": "eslint"
   },
   "dependencies": {
@@ -17,7 +17,10 @@
     "next": "16.0.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "react-razorpay": "^3.0.1",
+    "react-redux": "^9.2.0",
     "react-slick": "^0.31.0",
+    "redux": "^5.0.1",
     "slick-carousel": "^1.8.1",
     "sweetalert2": "^11.26.17",
     "useref": "^1.4.4"

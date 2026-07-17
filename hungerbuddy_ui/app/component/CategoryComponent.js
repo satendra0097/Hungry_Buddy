@@ -6,10 +6,11 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import { serverURL } from "../services/FetchNodeServices";
+import { serverURL, postData } from "../services/FetchNodeServices";
+import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
-export default function CategoryComponent({data})
- {
+export default function CategoryComponent({ data, dataRef, foodList, setFoodList }) {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('md'));
   var settings = {
@@ -21,30 +22,40 @@ export default function CategoryComponent({data})
     arrows: false
   };
   const sliderRef = useRef()
+  var navigate = useRouter();
+
   const [index, setIndex] = useState(0)
+  const path = usePathname();
+  const fetchAllFoodByCategory = async (cid) => {
+    var response = await postData('users/fetch_all_fooditems_by_category_id', { categoryid: cid });
 
-  // var data = [{ categoryid: 1, categoryname: 'South Indian', icon: 'southindian.png' },
-  // { categoryid: 2, categoryname: "Gulab jamun", icon: "gulab.png" },
-  // { categoryid: 3, categoryname: "Momos", icon: "momos.png" },
-  // { categoryid: 4, categoryname: "Poha", icon: "poha.png" },
-  // { categoryid: 5, categoryname: "Gol gappe", icon: "golgappe.png" },
-  // { categoryid: 6, categoryname: "Nodelas", icon: "nodelas.png" },
-  // { categoryid: 7, categoryname: "Burger", icon: "burgercombo.png" },
-  // { categoryid: 8, categoryname: "Fast food", icon: "coldring.png" },
-  // { categoryid: 9, categoryname: "Snacks", icon: "snacks.png" }
-  // ]
+
+    setFoodList(response.data);
+  };
+
+
   const handleCategoryClick = (cid) => {
+    if(path=="/homepage")
+    {
+    fetchAllFoodByCategory(cid)
     setIndex(cid)
-
+    dataRef.current?.scrollIntoView({ behavior: "smooth" })
   }
+
+  else
+  {
+
+    navigate.push('/homepage')
+  }
+}
   function showCategory() {
     return data.map((item) => {
       return (<div  >
-        <div onClick={() => handleCategoryClick(item.categoryid)} style={{ cursor: 'pointer', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', borderBottom: item.categoryid == index ? '4px solid red' : '' }}>
+        <div onClick={() => handleCategoryClick(item.categoryid)} style={{ cursor: 'pointer', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', borderBottom: item.categoryid == index ? '4px solid ' : '' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '70%', height: '70%', borderRadius: '50%' }}>
             <img style={{ width: '100%' }} src={`${serverURL}/images/${item.categoryicon}`} />
           </div>
-          <div style={{ fontSize: matches ? '0.7rem' : '1rem',color:'black' }}>{item.categoryname}</div>
+          <div style={{ fontSize: matches ? '0.7rem' : '1rem', color: 'black' }}>{item.categoryname}</div>
         </div>
 
       </div>)
@@ -59,13 +70,13 @@ export default function CategoryComponent({data})
   }
 
   return (
-    <div style={{ width: '95%', position: 'relative', marginTop:'10px'}}>
-      
+    <div style={{ width: '95%', position: 'relative', marginTop: '10px' }}>
+
       {matches ? <></> : <Image onClick={handlePrevious} style={{ position: 'absolute', top: '42%', zIndex: 2, cursor: 'pointer' }} src="/images/previous.png" width={35} height={35} alt="" />}
       <Slider ref={sliderRef} {...settings}>
         {showCategory()}
       </Slider>
-   <div style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10, marginLeft: '6%', color: 'black',marginTop:'5px' }}>Foods</div>
+      <div style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10, marginLeft: '6%', color: 'black', marginTop: '5px' }}>Foods</div>
 
       {matches ? <></> : <Image onClick={handleNext} style={{ position: 'absolute', top: '42%', right: '-0.3%', zIndex: 2, cursor: 'pointer' }} src="/images/forward.png" width={35} height={35} alt="" />}
     </div>

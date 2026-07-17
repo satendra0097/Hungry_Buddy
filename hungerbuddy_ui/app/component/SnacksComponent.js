@@ -7,11 +7,12 @@ import { useRef, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { serverURL } from "../services/FetchNodeServices";
-
+import {useRouter} from "next/navigation";
 export default function SnacksComponent({ data = [] }) {  
   const theme = useTheme();
+  
   const matches = useMediaQuery(theme.breakpoints.down("md"));
-
+   var navigate = useRouter();
   const settings = {
     dots: false,
     infinite: true,
@@ -24,8 +25,9 @@ export default function SnacksComponent({ data = [] }) {
   const sliderRef = useRef(null);
   const [index, setIndex] = useState(0);
 
-  const handleCategoryClick = (cid) => {
-    setIndex(cid);
+  const handleCategoryClick = (fid) => {
+    setIndex(fid);
+ navigate.push(`/productdetailcomponent/${fid}`)
   };
 
   function showCategory() {
