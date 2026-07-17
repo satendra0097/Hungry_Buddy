@@ -18,6 +18,8 @@ var adminloginRouter=require('./routes/student')
 var adminsRouter=require('./routes/admin')
 var employeeRouter=require('./routes/employee')
 var deliveryRouter=require('./routes/delivery')
+var picturesRouter=require('./routes/pictures')
+
 var app = express();
 
 // view engine setup
@@ -44,7 +46,7 @@ app.use('/adminlogin',adminloginRouter)
 app.use('/admin',adminsRouter)
 app.use('/employee',employeeRouter);
 app.use('/delivery',deliveryRouter)
-
+app.use('/pictures',picturesRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

@@ -44,44 +44,6 @@ router.post('/fetch_all_fooditems_by_category', function (req, res) {
 
   try {
     const { categoryname } = req.body;
-
-
-    if (!categoryname) {
-      return res.status(400).json({
-        status: false,
-        message: 'categoryname is required'
-      });
-    }
-
-
-    router.get('/fetch_all_fooditems', function (req, res) {
-      pool.query('select F.*,(select B.branchname from branch B where B.branchid=F.branchid) as branchname,(select C.categoryname from foodcategory C where C.categoryid=F.foodcategoryid) as categoryname from fooditems F',
-        function (error, result) {
-          if (error) {
-            console.log(error)
-            res.status(500).json({
-              status: false,
-              message: 'Database Error Please Contact Backend Team....'
-            });
-          }
-          else {
-            res.status(200).json({
-              status: true,
-              message: 'success',
-              data: result
-            });
-          }
-        }
-      );
-    });
-
-
-
-
-
-    /* =====================================================
-    Bekend message errro show
-       ===================================================== */
     pool.query(query, [categoryname], function (error, result) {
       if (error) {
         console.log(error);
@@ -106,29 +68,73 @@ router.post('/fetch_all_fooditems_by_category', function (req, res) {
   }
 });
 
+router.post("/fetch_all_fooditems_by_category_id", function (req, res) {
+  console.log(req.body)
+  pool.query(
+    "select * from fooditems where foodcategoryid=?",
+    [req.body.categoryid],
+    function (error, result) {
+      if (error) {
+        console.log(error);
+        res.status(500).json({
+          status: false,
+          message: "Database Error Please Contact Backend Team....",
+        });
+      } else {
+        res
+          .status(200)
+          .json({ status: true, message: "success", data: result });
+      }
+    }
+  );
+});
 
 
-    router.post("/fetch_all_fooditems_by_id", function (req, res) {
-      pool.query('select F.*,(select B.branchname from branch B where B.branchid=F.branchid) as branchname,(select C.categoryname from foodcategory C where C.categoryid=F.foodcategoryid) as categoryname from fooditems F where fooditemid=?',[req.body.fooditemid],
-        function (error, result) {
-        
-          if (error) {
-            console.log(error)
-            res.status(500).json({
-              status: false,
-              message: 'Database Error Please Contact Backend Team....'
-            });
-          }
-          else {
-            res.status(200).json({
-              status: true,
-              message: 'success',
-              data: result
-            });
-          }
-        }
-      );
-    });
+router.get('/fetch_all_fooditems', function (req, res) {
+  pool.query('select F.*,(select B.branchname from branch B where B.branchid=F.branchid) as branchname,(select C.categoryname from foodcategory C where C.categoryid=F.foodcategoryid) as categoryname from fooditems F',
+    function (error, result) {
+      if (error) {
+        console.log(error)
+        res.status(500).json({
+          status: false,
+          message: 'Database Error Please Contact Backend Team....'
+        });
+      }
+      else {
+        res.status(200).json({
+          status: true,
+          message: 'success',
+          data: result
+        });
+      }
+    }
+  );
+});
+
+
+router.post("/fetch_all_fooditems_by_id", function (req, res) {
+  pool.query('select F.*,(select B.branchname from branch B where B.branchid=F.branchid) as branchname,(select C.categoryname from foodcategory C where C.categoryid=F.foodcategoryid) as categoryname from fooditems F where fooditemid=?', [req.body.fooditemid],
+    function (error, result) {
+
+      if (error) {
+        console.log(error)
+        res.status(500).json({
+          status: false,
+          message: 'Database Error Please Contact Backend Team....'
+        });
+      }
+      else {
+        res.status(200).json({
+          status: true,
+          message: 'success',
+          data: result[0]
+        });
+      }
+    }
+  );
+});
+
+
 
 
 module.exports = router;

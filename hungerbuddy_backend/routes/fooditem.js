@@ -15,8 +15,8 @@ router.post(
     try {
       // console.log(req.body);
       pool.query(
-        "insert into fooditems(foodcategoryid, fooditemname, fooditemtype, fooditemtaste, ingridients, fullprice, halfprice, offerprice, status, rating, picture) values(?,?,?,?,?,?,?,?,?,?,?)",
-        [
+        "insert into fooditems(branchid,foodcategoryid, fooditemname, fooditemtype, fooditemtaste, ingridients, fullprice, halfprice, offerprice, status, rating, picture) values(?,?,?,?,?,?,?,?,?,?,?,?)",
+        [req.body.branchid,
           req.body.foodcategoryid,
           req.body.fooditemname,
           req.body.fooditemtype,
