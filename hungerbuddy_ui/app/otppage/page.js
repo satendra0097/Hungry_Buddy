@@ -1,14 +1,16 @@
 "use client"
 import { Grid, TextField } from "@mui/material";
 import { OtpInput } from 'reactjs-otp-input';
-import { useEffect, useState, Suspense } from "react"; // ✅ Change 1: Suspense import
+import { useEffect, useState, Suspense } from "react";
 import { useSelector } from "react-redux";
 import { generateOTP } from "../services/FetchNodeServices";
-import { useRouter, useSearchParams } from "next/navigation" // ✅ Change 2: usePathname remove kiya (use nahi ho raha)
+import { useRouter, useSearchParams } from "next/navigation"
 
-// ✅ Change 3: Main component ko wrap kiya with Suspense
+// ✅ SIRF YEH 1 LINE ADD KI HAI (Suspense issue fix ke liye)
+export const dynamic = 'force-dynamic';
+
 function OtpContent() {
-  const [gOtp, setGotp] = useState('');
+  const [gOtp, setGotp] = useState(''); 
   const [otp, setOtp] = useState('');
   const user = useSelector((state) => state.user);
   const mobileno = Object.keys(user)[0];
@@ -26,8 +28,8 @@ function OtpContent() {
       alert('Not Correct');
     }
   }
-
-  useEffect(function () {
+  
+  useEffect(function() {
     var otp = generateOTP();
     alert(otp);
     setGotp(otp);
@@ -36,7 +38,7 @@ function OtpContent() {
   const handleChange = (otp) => setOtp(otp);
 
   return (
-    <div style={{ display: "flex", height: '100vh', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+    <div style={{display:"flex",height:'100vh',width:'100%',justifyContent:'center',alignItems:'center'}}>
       <Grid size={12}>
         <div
           style={{
@@ -93,7 +95,7 @@ function OtpContent() {
                 gap: 10,
               }}
             >
-              <div style={{ width: '100%', padding: 30 }}>
+              <div style={{width:'100%',padding:30}}>
                 <OtpInput
                   value={otp}
                   onChange={handleChange}
@@ -116,12 +118,12 @@ function OtpContent() {
             <Grid size={6}>
               <div
                 style={{
-                  display: 'flex',
-                  paddingRight: 30,
-                  width: '100%',
+                  display:'flex',
+                  paddingRight:30,
+                  width:'100%',
                   color: "#0C5273",
                   fontWeight: "550",
-                  justifyContent: 'flex-end'
+                  justifyContent:'flex-end'
                 }}
               >
                 Resend OTP
@@ -154,7 +156,6 @@ function OtpContent() {
   );
 }
 
-// ✅ Suspense Boundary - Ye export karein
 export default function LoginOtpPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>

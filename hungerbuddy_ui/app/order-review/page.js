@@ -30,7 +30,16 @@ export default function OrderReviewPage() {
   const [drawerStatus, setDrawerStatus] = useState(false);
   const { error, isLoading, Razorpay } = useRazorpay();
   // var user=useSelector((state)=>state.user)
-  var user = JSON.parse(localStorage.getItem('USER'))
+  var user = null;
+  try {
+    if (typeof window !== 'undefined') {
+      const userData = localStorage.getItem('USER');
+      user = userData ? JSON.parse(userData) : null;
+    }
+  } catch (error) {
+    console.error('localStorage error:', error);
+    user = null;
+  }
   var btnMessage
   var userData
   if (user == null) {
@@ -102,7 +111,7 @@ export default function OrderReviewPage() {
     <div>
       {products.length == 0 ? (
         <div>Cart is empty</div>
-        
+
       ) : (
         <div
           className={styles.pageContainer}
@@ -110,7 +119,7 @@ export default function OrderReviewPage() {
             padding: isSmallMobile ? "12px" : isMobile ? "16px" : "24px",
           }}
         >
-          
+
           {/* Page Header */}
           <h1
             className={styles.pageTitle}
@@ -122,7 +131,7 @@ export default function OrderReviewPage() {
             Order Review
           </h1>
 
-          
+
 
           {/* Main Content using MUI Grid */}
           <Grid
@@ -139,8 +148,8 @@ export default function OrderReviewPage() {
                   gap: "16px",
                 }}
               >
-                
-                   <ShowAddress />
+
+                <ShowAddress />
                 {userData != "Not Login" ?
                   <ShowAddress address={userData} drawerStatus={drawerStatus} setDrawerStatus={setDrawerStatus} />
                   : <></>}
@@ -156,7 +165,7 @@ export default function OrderReviewPage() {
                 <CounterComponent currentStep={currentStep} />
                 <PaymentDetails items={products} />
                 <CouponComponent />
-                
+
                 {currentStep === 1 ? (
                   <Button
                     variant="contained"
