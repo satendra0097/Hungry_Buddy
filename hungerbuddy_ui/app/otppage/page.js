@@ -1,42 +1,42 @@
 "use client"
 import { Grid, TextField } from "@mui/material";
 import { OtpInput } from 'reactjs-otp-input';
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react"; // ✅ Change 1: Suspense import
 import { useSelector } from "react-redux";
 import { generateOTP } from "../services/FetchNodeServices";
+import { useRouter, useSearchParams } from "next/navigation" // ✅ Change 2: usePathname remove kiya (use nahi ho raha)
 
-import { useRouter,usePathname,useSearchParams} from "next/navigation"
-export default function LoginOtpPage() {
-  const [gOtp, setGotp] = useState(''); 
+// ✅ Change 3: Main component ko wrap kiya with Suspense
+function OtpContent() {
+  const [gOtp, setGotp] = useState('');
   const [otp, setOtp] = useState('');
-  const user=useSelector((state)=>state.user)
-  const mobileno=Object.keys(user)[0]
-  const navigate=useRouter()
- const param=useSearchParams()
- const from=param.get("from")
-  function checkOtp()
-  {
-     if(gOtp==otp)
-     {
-      if(from=="MP")
-    navigate.push('/order-review')
-   else if(from=='HP')
-    navigate.push("/homepage")
-     }
-     else
-     {
-      alert('Not Correct')
-     }
+  const user = useSelector((state) => state.user);
+  const mobileno = Object.keys(user)[0];
+  const navigate = useRouter();
+  const param = useSearchParams();
+  const from = param.get("from");
+
+  function checkOtp() {
+    if (gOtp == otp) {
+      if (from == "MP")
+        navigate.push('/order-review');
+      else if (from == 'HP')
+        navigate.push("/homepage");
+    } else {
+      alert('Not Correct');
+    }
   }
-  
-  useEffect(function(){
-   var otp=generateOTP()
-   alert(otp)
-   setGotp(otp)
-  },[])
+
+  useEffect(function () {
+    var otp = generateOTP();
+    alert(otp);
+    setGotp(otp);
+  }, []);
+
   const handleChange = (otp) => setOtp(otp);
+
   return (
-    <div style={{display:"flex",height:'100vh',width:'100%',justifyContent:'center',alignItems:'center'}}>
+    <div style={{ display: "flex", height: '100vh', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
       <Grid size={12}>
         <div
           style={{
@@ -46,14 +46,13 @@ export default function LoginOtpPage() {
             borderRadius: 20,
             position: "relative",
             right: -20,
-            boxShadow:
-              "0 3px 6px rgba(0,0,0,0.25), 0 10px 20px rgba(0,0,0,0.08)",
+            boxShadow: "0 3px 6px rgba(0,0,0,0.25), 0 10px 20px rgba(0,0,0,0.08)",
           }}
         >
           <Grid size={6}>
-              <div style={{ padding: 28 }}>
-          HungerBuddy
-        </div>
+            <div style={{ padding: 28 }}>
+              HungerBuddy
+            </div>
           </Grid>
           <Grid size={6}>
             <div style={{ marginLeft: 28, fontSize: 24, fontWeight: "1000" }}>
@@ -87,7 +86,6 @@ export default function LoginOtpPage() {
           <Grid size={6}>
             <div
               style={{
-                
                 marginTop: 2,
                 width: "100%",
                 display: "flex",
@@ -95,38 +93,35 @@ export default function LoginOtpPage() {
                 gap: 10,
               }}
             >
-              <div style={{width:'100%',padding:30}}>
-              
-              <OtpInput
-    value={otp}
-    onChange={handleChange}
-    numInputs={6}
-    separator={<span style={{ margin: '0 6px' }}>-</span>}
-    inputStyle={{
-      width: '40px',
-      height: '40px',
-      fontSize: '18px',
-      borderRadius: '6px',
-      border: '1px solid #ccc',
-    }}
-    focusStyle={{
-      border: '2px solid #1976d2',
-      outline: 'none',
-    }}
-  />
-              
+              <div style={{ width: '100%', padding: 30 }}>
+                <OtpInput
+                  value={otp}
+                  onChange={handleChange}
+                  numInputs={6}
+                  separator={<span style={{ margin: '0 6px' }}>-</span>}
+                  inputStyle={{
+                    width: '40px',
+                    height: '40px',
+                    fontSize: '18px',
+                    borderRadius: '6px',
+                    border: '1px solid #ccc',
+                  }}
+                  focusStyle={{
+                    border: '2px solid #1976d2',
+                    outline: 'none',
+                  }}
+                />
               </div>
             </div>
             <Grid size={6}>
               <div
                 style={{
-                  display:'flex',
-                  paddingRight:30,
-                  width:'100%',
-                  
+                  display: 'flex',
+                  paddingRight: 30,
+                  width: '100%',
                   color: "#0C5273",
                   fontWeight: "550",
-                  justifyContent:'flex-end'
+                  justifyContent: 'flex-end'
                 }}
               >
                 Resend OTP
@@ -149,12 +144,21 @@ export default function LoginOtpPage() {
                     fontSize: 15,
                     fontWeight: 550,
                   }}
-                ></input>
+                />
               </div>
             </Grid>
           </Grid>
         </div>
       </Grid>
     </div>
+  );
+}
+
+// ✅ Suspense Boundary - Ye export karein
+export default function LoginOtpPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <OtpContent />
+    </Suspense>
   );
 }
