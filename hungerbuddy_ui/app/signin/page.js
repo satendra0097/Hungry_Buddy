@@ -5,7 +5,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { useSearchParams } from "next/navigation";
+
+
 export default function LoginPage(){
+
  const [mobileNo,setMobileNo]=useState('')
  const [user,setUser]=useState('')
  const [message,setMessage]=useState('')
@@ -23,7 +26,7 @@ const handleClick=async()=>{
         var mn=response?.data?.mobileno       
         dispatch({type:'ADD_USER',payload:[mn,response?.data]})
         
-        navigate.push(`/otppage?from=${from}`)
+        navigate.push(`/otppage`)
      }
     else
      setMessage(response.message)

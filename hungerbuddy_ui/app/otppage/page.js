@@ -4,6 +4,7 @@ import { OtpInput } from 'reactjs-otp-input';
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { generateOTP } from "../services/FetchNodeServices";
+
 import { useRouter,usePathname,useSearchParams} from "next/navigation"
 export default function LoginOtpPage() {
   const [gOtp, setGotp] = useState(''); 

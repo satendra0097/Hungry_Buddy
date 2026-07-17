@@ -134,7 +134,28 @@ router.post("/fetch_all_fooditems_by_id", function (req, res) {
   );
 });
 
-
+router.post("/student_sign_in", function (req, res) {
+  pool.query('select * from student where mobileno=?', [req.body.mobileno],
+    function (error, result) {
+ 
+      if (error) {
+        console.log(error)
+        res.status(500).json({
+          status: false,
+          message: 'Database Error Please Contact Backend Team....'
+        });
+      }
+      else if (result.length == 1)
+      {
+        res.status(200).json({
+          status: true,
+          message: 'success',
+          data: result[0]
+        });
+      }
+    }
+  );
+});
 
 
 module.exports = router;
