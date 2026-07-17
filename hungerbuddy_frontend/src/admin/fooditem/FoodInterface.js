@@ -73,7 +73,7 @@ const useStyle = makeStyles((theme) => ({
 export default function FoodInterface() {
   var classes = useStyle();
   var branch = JSON.parse(localStorage.getItem('Branch'))
-  // alert(JSON.stringify(branch))
+  // alert(JSON.stringify(branch?.branchid))
   const [branchid, setBranchid] = useState(branch?.branchid)
   const [branchName, setBranchName] = useState(branch?.branchname)
  
@@ -179,6 +179,7 @@ export default function FoodInterface() {
       }
     }
   };
+  
   const handleChange = (e) => {
     setPictures({
       bytes: e.target.files[0],

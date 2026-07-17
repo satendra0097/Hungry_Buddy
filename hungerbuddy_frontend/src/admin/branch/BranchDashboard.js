@@ -16,6 +16,8 @@ import Fooditem from "../fooditem/FoodInterface";
 import fooditemimage from './assets/fooditem.png'
 
 
+
+import multiple from '../branch/assets/multiple.png';
 import Orders from '../branch/assets/Orders.png';
 import Logout from '../branch/assets/Logout.png';
 import Dashboard from '../branch/assets/dashboard.png'
@@ -24,7 +26,7 @@ import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import Category from "../category/Category";
 import { Route, Routes } from "react-router-dom";
-
+import PictureInterface from "../morepicture/PictureInterface";
 export default function BranchDashboard() {
 
   var navigate = useNavigate()
@@ -50,7 +52,7 @@ export default function BranchDashboard() {
         </ListItem>
 
         <Divider />
-        <ListItemButton onClick={()=>navigate('/branchdashboard/category')}>
+        <ListItemButton onClick={() => navigate('/branchdashboard/category')}>
           <ListItemAvatar>
             <Avatar src={Foodcategory} sx={{ width: 30, height: 30 }} variant="rounded">
 
@@ -59,7 +61,7 @@ export default function BranchDashboard() {
           <ListItemText primary={<div style={{ fontFamily: 'Montserrat' }}>Food Category</div>} />
         </ListItemButton>
 
-        <ListItemButton  onClick={()=>navigate('/branchdashboard/fooddisplay')}>
+        <ListItemButton onClick={() => navigate('/branchdashboard/fooddisplay')}>
           <ListItemAvatar>
             <Avatar src={fooditemimage} sx={{ width: 30, height: 30 }} variant="rounded">
 
@@ -74,6 +76,16 @@ export default function BranchDashboard() {
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary={<div style={{ fontFamily: 'Montserrat' }}>Orders</div>} />
+        </ListItemButton>
+
+
+
+        <ListItemButton onClick={() => navigate('/branchdashboard/pictureinterface')}>
+          <ListItemAvatar>
+            <Avatar src={multiple} sx={{ width: 30, height: 30 }} variant="rounded">
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary={<div style={{ fontFamily: 'Montserrat' }}>More Pictures</div>} />
         </ListItemButton>
 
 
@@ -109,8 +121,10 @@ export default function BranchDashboard() {
       <Grid size={9.6}>
         <Routes>
           <Route element={<Category />} path="/category" />
-         <Route element={<FoodDisplay />} path="/fooddisplay" />
-        <Route element={<Fooditem />} path="/fooditem" />
+          <Route element={<FoodDisplay />} path="/fooddisplay" />
+          <Route element={<Fooditem />} path="/fooditem" />
+          <Route element={<PictureInterface />} path="/pictureinterface" />
+
         </Routes>
       </Grid>
 
@@ -118,6 +132,6 @@ export default function BranchDashboard() {
 
     </Grid >
   </div >)
-  
+
 }
 

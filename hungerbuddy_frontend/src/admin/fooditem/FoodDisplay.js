@@ -72,7 +72,7 @@ const useStyle = makeStyles((theme) => ({
 
 export default function FoodDisplay({ refresh, setRefresh }) {
   const classes = useStyle();
-  var branch = JSON.parse(localStorage.getItem('Admin'))
+  var branch = JSON.parse(localStorage.getItem('Branch'))
   console.log("gfcjhgujh", branch);
 
   const [foodList, setFoodList] = useState([]);
