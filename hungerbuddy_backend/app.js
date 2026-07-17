@@ -1,24 +1,26 @@
+dotenv.config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var cors=require('cors')
+var cors = require('cors')
+const http = require('http');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var categoryRouter=require('./routes/category')
-var branchRouter=require('./routes/branch')
-var statecityRouter=require('./routes/statecity')
-var fooditemRouter=require('./routes/fooditem')
-var batchRouter=require('./routes/batch')
-var sectionRouter=require('./routes/section')
-var studentRouter=require('./routes/student')
-var adminloginRouter=require('./routes/student')
-var adminsRouter=require('./routes/admin')
-var employeeRouter=require('./routes/employee')
-var deliveryRouter=require('./routes/delivery')
-var picturesRouter=require('./routes/pictures')
+var categoryRouter = require('./routes/category')
+var branchRouter = require('./routes/branch')
+var statecityRouter = require('./routes/statecity')
+var fooditemRouter = require('./routes/fooditem')
+var batchRouter = require('./routes/batch')
+var sectionRouter = require('./routes/section')
+var studentRouter = require('./routes/student')
+var adminloginRouter = require('./routes/student')
+var adminsRouter = require('./routes/admin')
+var employeeRouter = require('./routes/employee')
+var deliveryRouter = require('./routes/delivery')
+var picturesRouter = require('./routes/pictures')
 
 var app = express();
 
@@ -35,20 +37,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/category',categoryRouter)
-app.use('/branch',branchRouter)
-app.use('/statecity',statecityRouter)
-app.use('/fooditem',fooditemRouter)
-app.use('/batch',batchRouter)
-app.use('/section',sectionRouter)
-app.use('/student',studentRouter)
-app.use('/adminlogin',adminloginRouter)
-app.use('/admin',adminsRouter)
-app.use('/employee',employeeRouter);
-app.use('/delivery',deliveryRouter)
-app.use('/pictures',picturesRouter)
+app.use('/category', categoryRouter)
+app.use('/branch', branchRouter)
+app.use('/statecity', statecityRouter)
+app.use('/fooditem', fooditemRouter)
+app.use('/batch', batchRouter)
+app.use('/section', sectionRouter)
+app.use('/student', studentRouter)
+app.use('/adminlogin', adminloginRouter)
+app.use('/admin', adminsRouter)
+app.use('/employee', employeeRouter);
+app.use('/delivery', deliveryRouter)
+app.use('/pictures', picturesRouter)
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 
 
@@ -56,7 +58,7 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -65,5 +67,25 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+app.get('/wake-up', (req, res) => {
+  console.log('💤 Wake-up ping received at:', new Date().toISOString());
+  res.status(200).json({
+    status: 'awake',
+    time: new Date().toISOString()
+  });
+});
+
+setInterval(() => {
+  http.get('https://hungry-buddy.onrender.com/wake-up', (res) => {
+    if (res.statusCode === 200) {
+      console.log('✅ Server kept awake - Status:', res.statusCode);
+    } else {
+      console.log('⚠️ Server responded with status:', res.statusCode);
+    }
+  }).on('error', (err) => {
+    console.log('❌ Wake-up failed:', err.message);
+  });
+}, 14.5 * 60 * 1000);
 
 module.exports = app;
