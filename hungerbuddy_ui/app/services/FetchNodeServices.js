@@ -1,7 +1,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const serverURL = "https://hungry-buddy.onrender.com";
+const serverURL = "http://localhost:5000";
 
 function getDate() {
     var cd = new Date();
