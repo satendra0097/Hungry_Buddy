@@ -1,7 +1,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const serverURL = process.env.serverUrl;
+const serverURL = process.env.NEXT_PUBLIC_API_URL;
 
 function getDate() {
     var cd = new Date();
