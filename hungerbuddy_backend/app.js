@@ -79,7 +79,7 @@ app.get('/wake-up', (req, res) => {
 
 // ============== KEEP ALIVE WITH AXIOS ==============
 setInterval(() => {
-  axios.get('https://hungry-buddy.onrender.com/wake-up', {
+  axios.get(process.env.backend, {
     timeout: 10000, // 10 second timeout
     headers: {
       'User-Agent': 'Keep-Alive-Service'
