@@ -1,7 +1,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const serverURL = "http://localhost:5000";
+const serverURL = process.env.serverUrl;
 
 function getDate() {
     var cd = new Date();
