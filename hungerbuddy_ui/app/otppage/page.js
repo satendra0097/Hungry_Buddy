@@ -6,30 +6,41 @@ import { useSelector } from "react-redux";
 import { generateOTP } from "../services/FetchNodeServices";
 import { useRouter, useSearchParams } from "next/navigation"
 
-// ✅ SIRF YEH 1 LINE ADD KI HAI (Suspense issue fix ke liye)
+
 export const dynamic = 'force-dynamic';
 
 function OtpContent() {
-  const [gOtp, setGotp] = useState(''); 
+  const [gOtp, setGotp] = useState('');
   const [otp, setOtp] = useState('');
   const user = useSelector((state) => state.user);
+
   const mobileno = Object.keys(user)[0];
   const navigate = useRouter();
   const param = useSearchParams();
   const from = param.get("from");
 
+  // function checkOtp() {
+  //   if (otp === gOtp) {
+  //     if(from === "MP") 
+  //       navigate.push("/order-review");
+  //     else if(from === "HP")
+  //       navigate.push("/homepage");
+  //   } else {
+  //     alert("Invalid OTP"); 
+  //   }
+  // }
+
   function checkOtp() {
-    if (gOtp == otp) {
-      if (from == "MP")
-        navigate.push('/order-review');
-      else if (from == 'HP')
-        navigate.push("/homepage");
-    } else {
-      alert('Not Correct');
-    }
+  if (String(otp) === String(gOtp)) {  // ← YAHAN CHANGE
+    if(from === "MP") 
+      navigate.push("/order-review");
+    else if(from === "HP")
+      navigate.push("/homepage");
+  } else {
+    alert("Invalid OTP"); 
   }
-  
-  useEffect(function() {
+}
+  useEffect(function () {
     var otp = generateOTP();
     alert(otp);
     setGotp(otp);
@@ -38,7 +49,7 @@ function OtpContent() {
   const handleChange = (otp) => setOtp(otp);
 
   return (
-    <div style={{display:"flex",height:'100vh',width:'100%',justifyContent:'center',alignItems:'center'}}>
+    <div style={{ display: "flex", height: '100vh', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
       <Grid size={12}>
         <div
           style={{
@@ -95,7 +106,7 @@ function OtpContent() {
                 gap: 10,
               }}
             >
-              <div style={{width:'100%',padding:30}}>
+              <div style={{ width: '100%', padding: 30 }}>
                 <OtpInput
                   value={otp}
                   onChange={handleChange}
@@ -118,12 +129,12 @@ function OtpContent() {
             <Grid size={6}>
               <div
                 style={{
-                  display:'flex',
-                  paddingRight:30,
-                  width:'100%',
+                  display: 'flex',
+                  paddingRight: 30,
+                  width: '100%',
                   color: "#0C5273",
                   fontWeight: "550",
-                  justifyContent:'flex-end'
+                  justifyContent: 'flex-end'
                 }}
               >
                 Resend OTP

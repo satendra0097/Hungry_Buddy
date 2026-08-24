@@ -3,97 +3,80 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useTheme } from "@mui/material/styles"
+import { useTheme } from "@mui/material/styles";
 import { serverURL } from "../services/FetchNodeServices";
-
-
+ 
 export default function ProductImageComponent({ data, pictures }) {
-  // alert("xxxx"+JSON.stringify(data))
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
-  //const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
-  const images = pictures?.picture ? pictures.picture.split(",") : []
-
-
-  // const images = [
-  //   `${serverURL}/images/aloosev1.png`,
-  //   `${serverURL}/images/aloosev2.png`,
-  //   `${serverURL}/images/aloosev3.png`,
-  // ];
-
+  const images = pictures?.picture ? pictures.picture.split(",") : [];
+ 
   const settings = {
     dots: false,
-    infinite: true,
+    infinite: images.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: false,
   };
-  
-  const showpictures = () => {
-    return pictures?.picture.map((item) => {
-      <img
-        src={'${serverURL}/images/$[item]'}
-        alt=""
-        style={{ width: 300, height: 300, borderRadius: 25 }}
-      />
-    })
-  }
+ 
   return (
-    <div style={{ marginTop: 30, marginLeft: matches ? "0" : "10%" }}>
+    // ✅ FIX: no more marginLeft:"10%" hack. Container simply fills its
+    // parent grid/flex cell and caps at 626px on desktop.
+    <div style={{ width: "100%", maxWidth: matches ? "100%" : "626px", margin: matches ? "0 auto" : "0" }}>
       {matches ? (
-
-        // MOBILE: ke liye  !!
-
-        <div style={{ width: "100%", maxWidth: "400px", margin: "0 auto" }}>
-          <Slider {...settings}>
-            {images.map((item) => (
-              <div >
-                <img
-                  src={item}
-                  alt=""
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    borderRadius: 15,
-                    // margin: "0 auto",
-
-                  }}
-                />
-              </div>
-            ))}
-          </Slider>
+        // MOBILE: slider, image always square + full width (no fixed px)
+        <div style={{ width: "100%" }}>
+          {images.length > 0 ? (
+            <Slider {...settings}>
+              {images.map((item, i) => (
+                <div key={i}>
+                  <img
+                    src={item}
+                    alt=""
+                    style={{
+                      width: "100%",
+                      aspectRatio: "1 / 1",
+                      objectFit: "cover",
+                      borderRadius: 15,
+                    }}
+                  />
+                </div>
+              ))}
+            </Slider>
+          ) : (
+            <img
+              src={`${serverURL}/images/${data?.picture}`}
+              alt=""
+              style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "cover", borderRadius: 15 }}
+            />
+          )}
         </div>
       ) : (
-
-        // Original wala !!
-
-        <div>
+        // DESKTOP/TABLET: main image + 2 thumbnails, all fluid (%) not fixed px
+        <div style={{ width: "100%" }}>
           <img
             src={`${serverURL}/images/${data?.picture}` || `${serverURL}/images/aloosev1.png`}
             alt=""
             style={{
-              width: 626,
-              height: 635,
+              width: "100%",
+              aspectRatio: "1 / 1",
+              objectFit: "cover",
               borderRadius: 25,
               marginBottom: 20,
+              display: "block",
             }}
           />
-          <div style={{ display: "flex", gap: 20 }}>
+          <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
             <img
-              src={images[0]
-                ? `${serverURL}/images/${images[0]}`
-                : `${serverURL}/images/aloosev2.png`}
+              src={images[0] ? `${serverURL}/images/${images[0]}` : `${serverURL}/images/aloosev2.png`}
               alt=""
-              style={{ width: 300, height: 300, borderRadius: 25 }}
+              style={{ width: "calc(50% - 10px)", aspectRatio: "1 / 1", objectFit: "cover", borderRadius: 25 }}
             />
-
             <img
-              src={images[1]
-                ? `${serverURL}/images/${images[1]}`
-                : `${serverURL}/images/aloosev3.png`}
+              src={images[1] ? `${serverURL}/images/${images[1]}` : `${serverURL}/images/aloosev3.png`}
               alt=""
-              style={{ width: 300, height: 300, borderRadius: 25 }}
+              style={{ width: "calc(50% - 10px)", aspectRatio: "1 / 1", objectFit: "cover", borderRadius: 25 }}
             />
           </div>
         </div>

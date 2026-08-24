@@ -4,134 +4,45 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Divider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-
-export default function ProductInfoComponent({data}) { 
-    const theme = useTheme();
-    const matches = useMediaQuery(theme.breakpoints.down("md"));
-    
-    return (
-        <div style={{
-            display: 'flex',
-            width: matches ? "100%" : "40%",
-            marginLeft: matches ? -46 : "59%",
-            marginTop: matches ? -50 : 40,
-            padding: matches ? "20px" : "0",
-            justifyContent: matches ? "center" : "flex-start"
-        }}>
-            <div style={{ 
-                width: matches ? "100%" : "100%",
-                maxWidth: matches ? "500px" : "100%"
-            }}>
-                
-                <Accordion style={{ 
-                    background: 'transparent',
-                    boxShadow: 'none',
-                    border: 'none'
-                }}>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1-content"
-                        id="panel1-header"
-                      
-                    >
-                        <Typography component="span" style={{
-                            display: 'flex',
-                            fontSize: matches ? "16px" : "18px",
-                            fontFamily: 'poppins',
-                            fontWeight: 400
-                        }}>
-                            Ingredients list
-                        </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails style={{ paddingLeft: 0 }}>
+ 
+export default function ProductInfoComponent({ data }) {
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down("md"));
+ 
+  return (
+    // ✅ FIX: removed marginLeft:"59%"/-46 hack. This component now just
+    // fills 100% of whatever column its parent grid/flex gives it.
+    <div style={{ width: "100%", padding: matches ? "20px" : "0", boxSizing: "border-box" }}>
+ 
+      <Accordion style={{ background: 'transparent', boxShadow: 'none', border: 'none', borderTop: '1px solid #cebdd8ff' }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
+          <Typography component="span" style={{ fontSize: matches ? "16px" : "18px", fontFamily: 'poppins', fontWeight: 400 }}>
+            Ingredients list
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails style={{ paddingLeft: 0 }}>
           {data?.ingredients}
-
-                    </AccordionDetails>
-                </Accordion>
-
-                
-                {/* <Divider style={{ 
-                    marginTop: matches ? 20 : 30,
-                    backgroundColor: "#cebdd8ff",
-                    width: matches ? "93%" : "40%",
-                    position:'absolute'
-                }} />
-
-            
-                <div style={{ marginTop: matches ? "4%" : "5%" }}>
-                    <Accordion style={{ 
-                        background: 'transparent',
-                        boxShadow: 'none',
-                        border: 'none'
-                    }}>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel2-content"
-                            id="panel2-header"
-                        >
-                            <Typography component="span" style={{
-                                display: 'flex',
-                                fontSize: matches ? "16px" : "18px",
-                                fontFamily: 'poppins',
-                                fontWeight: 400
-                            }}>
-                                Nutrition labeling / 100g
-                            </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails style={{ paddingLeft: 0 }}>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex.
-                        </AccordionDetails>
-                    </Accordion>
-                </div> */}
-
-            
-               <Divider style={{ 
-                    marginTop: matches ? 20 : 30,
-                    backgroundColor: "#cebdd8ff",
-                    width: matches ? "93%" : "40%",
-                    position:'absolute'
-                }} />
-
-
-                <div style={{ marginTop: matches ? "4%" : "5%" }}>
-                    <Accordion style={{ 
-                        background: 'transparent',
-                        boxShadow: 'none',
-                        border: 'none'
-                    }}>
-                        <AccordionSummary
-                        
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel3-content"
-                            id="panel3-header"
-                        >
-                            <Typography component="span" style={{
-                                display: 'flex',
-                                fontSize: matches ? "16px" : "18px",
-                                fontFamily: 'poppins',
-                                fontWeight: 400
-                            }}>
-                                Share
-                            </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails style={{ paddingLeft: 0 }}>
-                     
-  <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                        <img style={{width:'20px',height:'20px'}} src={'/images/linkedin-sign.png'} />
-                        <img style={{width:'20px',height:'20px'}} src={'/images/social.png'}  />
-                        <img style={{width:'20px',height:'20px'}} src={'/images/facebook.png'} />
-                        <img style={{width:'20px',height:'20px'}} src={'/images/instagram.png'}  />
-                        <img style={{width:'20px',height:'20px'}} src={'/images/pinterest-logo.png'}  />
-                    </div>
-
-
-                        </AccordionDetails>
-                    </Accordion>
-                </div>
-            </div>
-        </div>
-    )
+        </AccordionDetails>
+      </Accordion>
+ 
+      <Accordion style={{ background: 'transparent', boxShadow: 'none', border: 'none', borderTop: '1px solid #cebdd8ff' }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel3-content" id="panel3-header">
+          <Typography component="span" style={{ fontSize: matches ? "16px" : "18px", fontFamily: 'poppins', fontWeight: 400 }}>
+            Share
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails style={{ paddingLeft: 0 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 10 }}>
+            <img style={{ width: '20px', height: '20px' }} src={'/images/linkedin-sign.png'} alt="linkedin" />
+            <img style={{ width: '20px', height: '20px' }} src={'/images/social.png'} alt="social" />
+            <img style={{ width: '20px', height: '20px' }} src={'/images/facebook.png'} alt="facebook" />
+            <img style={{ width: '20px', height: '20px' }} src={'/images/instagram.png'} alt="instagram" />
+            <img style={{ width: '20px', height: '20px' }} src={'/images/pinterest-logo.png'} alt="pinterest" />
+          </div>
+        </AccordionDetails>
+      </Accordion>
+    </div>
+  );
 }

@@ -61,6 +61,7 @@ export default function DrinksComponent({ data = [] })
             }}
           >
             <img
+              loading="lazy"
               style={{ width: '100%' }}
               src={`${serverURL}/images/${item.picture}`}
               alt=""

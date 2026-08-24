@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Grid, Button } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -13,12 +13,14 @@ import styles from "./order-review.module.css";
 import { useDispatch, useSelector } from "react-redux";
 // import AddressDrawer from '../add-address/page'  // ✅ Fixed: removed extra semicolon
 import { useRazorpay, RazorpayOrderOptions } from "react-razorpay";
-import { postData } from "../services/FetchNodeServices";
+
+import { getData, postData } from "../services/FetchNodeServices";
 
 export default function OrderReviewPage() {
   const theme = useTheme();
   const router = useRouter();
-
+  const [address, setAddress] = useState([])
+  const [activeAdd, setActiveAdd] = useState('')
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const isSmallMobile = useMediaQuery(theme.breakpoints.down("sm"));
   var cart = useSelector((state) => state.cart);
@@ -52,6 +54,19 @@ export default function OrderReviewPage() {
     userData = Object.values(user)[0]
   }
 
+  const fetchAddress = async () => {
+    const res = await getData('address/fetch_all_user_address')
+    if (res.status) {
+      if (res.data.length) {
+        setAddress(res.data)
+        setActiveAdd(res.data.findIndex((item, i) => item.active == 1))
+      }
+    }
+  }
+
+  useEffect(() => {
+    fetchAddress()
+  }, [])
 
   const mrpTotal = products.reduce((sum, item) => sum + (item.offerprice > 0 ? item.offerprice : item.fullprice) * item.qty, 0);
 
@@ -71,16 +86,17 @@ export default function OrderReviewPage() {
     description: "Test Transaction",
     order_id: "", // Generate order_id on server
     handler: async (response) => {
-      console.log(response)
+      console.log(response);
+      await postData("users/submit_orders", { paymentid: response.razorpay_payment_id,  delivery_status: "Not Deliver", payment_type: "None" }).then(async (res) => {
 
-      await postData("users/submit_order", { paymentid: response.razorpay_payment_id, orderdate: new Date(), delivery_status: "Not Deliver", payment_type: "None" }).then(async (res) => {
-
-        await postData('users/submit_order_detail', { orderid: res.orderid, enrollmentno: userData.enrollmentno, emailid: userData.emailid, mobileno: userData.mobileno, data: products })
+        
+        await postData('users/submit_order_details', { orderid: res.orderid, enrollmentno: userData.enrollmentno, emailid: userData.emailid, mobileno: userData.mobileno, data: products })
       })
 
       dispatch({ type: 'EMPTY_CART' })
       router.push('/homepage')
 
+      alert("payment Succesfulll!")
     },
     prefill: {
       name: userData?.studentname,
@@ -95,15 +111,19 @@ export default function OrderReviewPage() {
 
   const handleMakePayment = () => {
     if (userData == "Not Login") {
-      router.push("/signin?from=MP")
+      router.push("/signin?from=MP");
     }
     else {
-      const razorpayInstance = new window.Razorpay(options);
-      razorpayInstance.open();
+      if (!Razorpay) {
+        alert("Razorpay is loading, please wait...");
+        return;
+      }
 
+      const razorpayInstance = new Razorpay(options);
+      razorpayInstance.open();
     }
 
-    setCurrentStep(2); // Move to Payment step
+    setCurrentStep(2);
   };
 
 
@@ -149,9 +169,9 @@ export default function OrderReviewPage() {
                 }}
               >
 
-                <ShowAddress />
+                {/* <ShowAddress /> */}
                 {userData != "Not Login" ?
-                  <ShowAddress address={userData} drawerStatus={drawerStatus} setDrawerStatus={setDrawerStatus} />
+                  <ShowAddress setActiveAdd={setActiveAdd} address={address ? activeAdd ? address[activeAdd] : address[0] : ''} drawerStatus={drawerStatus} setDrawerStatus={setDrawerStatus} />
                   : <></>}
 
                 <ShowCart items={products} />

@@ -57,6 +57,7 @@ export default function SnacksComponent({ data = [] }) {
             }}
           >
             <img
+              loading="lazy"
               src={`${serverURL}/images/${item.picture}`}
               alt={item.fooditemname}
               style={{ width: "100%" }}

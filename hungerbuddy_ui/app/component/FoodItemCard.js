@@ -20,7 +20,7 @@ export default function FoodItemCard({ data }) {
             background: mycolor[Math.floor(Math.random() * mycolor.length)]
           }} >
             <div className={styles.imageStyle}>
-              <img src={`${serverURL}/images/${item.picture}`}
+              <img loading="lazy" src={`${serverURL}/images/${item.picture}`}
                 alt={item.fooditemname}
                 style={{ width: '100%', height: '100%' }}
               />
@@ -78,7 +78,7 @@ export default function FoodItemCard({ data }) {
           color: 'black'
         }}
       >
-        Today's Menu
+        Today&apos;s Menu
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>

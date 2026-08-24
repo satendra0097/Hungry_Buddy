@@ -22,6 +22,7 @@ var adminsRouter = require('./routes/admin');
 var employeeRouter = require('./routes/employee');
 var deliveryRouter = require('./routes/delivery');
 var picturesRouter = require('./routes/pictures');
+var addressRouter = require("./routes/address");
 
 var app = express();
 
@@ -30,11 +31,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(cors());
 
-app.use(logger('dev'));
+app.use(logger(process.env.NODE_ENV === 'production' ? 'tiny' : 'dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: '7d' }));
 
 // Routes
 app.use('/', indexRouter);
@@ -51,6 +52,16 @@ app.use('/admin', adminsRouter);
 app.use('/employee', employeeRouter);
 app.use('/delivery', deliveryRouter);
 app.use('/pictures', picturesRouter);
+app.use("/address", addressRouter);
+
+// Wake-up endpoint
+app.get('/wake-up', (req, res) => {
+  console.log('💤 Wake-up ping received at:', new Date().toISOString());
+  res.status(200).json({
+    status: 'awake',
+    time: new Date().toISOString()
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -66,15 +77,6 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
-});
-
-// Wake-up endpoint
-app.get('/wake-up', (req, res) => {
-  console.log('💤 Wake-up ping received at:', new Date().toISOString());
-  res.status(200).json({
-    status: 'awake',
-    time: new Date().toISOString()
-  });
 });
 
 // ============== KEEP ALIVE WITH AXIOS ==============

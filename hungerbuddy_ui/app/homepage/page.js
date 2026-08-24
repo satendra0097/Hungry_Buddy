@@ -8,45 +8,38 @@ import FooterComponent from "../component/FooterComponent"
 import Header from "../component/Header"
 import { useState, useEffect, useRef } from "react"
 import SnacksComponent from "../component/SnacksComponent"
-import { postData, getData } from "../services/FetchNodeServices"
+import { getData } from "../services/FetchNodeServices"
 import { useReducer } from "react"
-
+import { navigate } from "next/dist/client/components/segment-cache/navigation"
+import { useRouter } from "next/navigation"
 
 export default function HomePage() {
   const aboutRef = useRef(null);
   const [snacksList, setSnacksList] = useState([])
   const [drinkList, setDrinkList] = useState([])
   const [foodList, setFoodList] = useState([])
+  
+// var navigate=useRouter()
 
+//   useEffect(() => {
+//     navigate.reffresh();
+//   },[]);
 
-  const fetchAllFood = async (categoryName) => {
+  const fetchHomepageData = async () => {
     try {
-      const response = await postData(
-        "users/fetch_all_fooditems_by_category", { categoryname: categoryName }
-      )
-
-      if (response?.status) {
-
-
-        if (categoryName === 'Snacks') setSnacksList(response.data || [])
-        else if (categoryName === 'Drinks') setDrinkList(response.data || [])
+      const response = await getData("users/homepage_data")
+      if (response?.data?.status) {
+        setSnacksList(response.data.snacks || [])
+        setDrinkList(response.data.drinks || [])
+        setFoodList(response.data.allItems || [])
       }
     } catch (error) {
-      console.error("Error fetching food items:", error)
+      console.error("Error fetching homepage data:", error)
     }
   }
 
-
-
-  const fetchAllFoodItems = async (cid) => {
-    var response = await getData("users/fetch_all_fooditems");
-    setFoodList(response.data);
-  }
-
   useEffect(() => {
-    fetchAllFood('Snacks')
-    fetchAllFood('Drinks')
-    fetchAllFoodItems()
+    queueMicrotask(() => fetchHomepageData());
   }, [])
 
   return (

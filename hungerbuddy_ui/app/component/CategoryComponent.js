@@ -50,7 +50,7 @@ export default function CategoryComponent({ data, dataRef, foodList, setFoodList
 }
   function showCategory() {
     return data?.map((item) => {
-      return (<div  >
+      return (<div key={item.categoryid} >
         <div onClick={() => handleCategoryClick(item.categoryid)} style={{ cursor: 'pointer', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', borderBottom: item.categoryid == index ? '4px solid ' : '' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '70%', height: '70%', borderRadius: '50%' }}>
             <img style={{ width: '100%' }} src={`${serverURL}/images/${item.categoryicon}`} />
