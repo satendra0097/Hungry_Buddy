@@ -28,10 +28,10 @@ export default function HomePage() {
   const fetchHomepageData = async () => {
     try {
       const response = await getData("users/homepage_data")
-      if (response?.data?.status) {
-        setSnacksList(response.data.snacks || [])
-        setDrinkList(response.data.drinks || [])
-        setFoodList(response.data.allItems || [])
+      if (response?.status) {
+        setSnacksList(response.snacks || [])
+        setDrinkList(response.drinks || [])
+        setFoodList(response.allItems || [])
       }
     } catch (error) {
       console.error("Error fetching homepage data:", error)
