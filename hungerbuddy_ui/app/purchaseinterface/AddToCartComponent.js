@@ -1,56 +1,56 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import Image from "next/image";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { useDispatch } from "react-redux";
  
-export default function AddToCartComponent({ data, refresh, setRefresh }) {
+const AddToCartComponent = memo(function AddToCartComponent({ data, refresh, setRefresh }) {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
  
-  const [hovered, setHovered] = useState(null);
-  const [quantity, setQuantity] = useState(data.qty);
+  const [hovered, setHovered] = useState(false);
+  const [quantity, setQuantity] = useState(data?.qty || 0);
   const [weight, setWeight] = useState();
   const dispatch = useDispatch();
  
-  const handelAddClick = () => {
+  const offerPrice = Number(data?.offerprice) || 0;
+  const fullPrice = Number(data?.fullprice) || 0;
+  const halfPrice = Number(data?.halfprice) || 0;
+  const effectivePrice = offerPrice > 0 ? offerPrice : fullPrice;
+ 
+  const handelAddClick = useCallback(() => {
     const q = quantity + 1;
     setQuantity(q);
     dispatch({ type: "ADD_CART", payload: [data.fooditemid, { ...data, qty: q }] });
-    setRefresh(!refresh);
-  };
+    setRefresh(r => !r);
+  }, [quantity, data, dispatch, setRefresh]);
  
-  const handelMinusClick = () => {
+  const handelMinusClick = useCallback(() => {
     const q = quantity - 1;
     if (q <= 0) {
-      dispatch({ type: "DELETE_CART", payload: [data.fooditemid, { ...data, qty: 0 }] });
       setQuantity(0);
+      dispatch({ type: "DELETE_CART", payload: [data.fooditemid, { ...data, qty: 0 }] });
     } else {
       setQuantity(q);
       dispatch({ type: "ADD_CART", payload: [data.fooditemid, { ...data, qty: q }] });
     }
-    setRefresh(!refresh);
-  };
+    setRefresh(r => !r);
+  }, [quantity, data, dispatch, setRefresh]);
  
   useEffect(() => {
-    const w = data?.offeprice > 0 ? data?.offeprice : data.fullprice;
-    queueMicrotask(() => setWeight(w));
-  }, [data?.fooditemid]);
+    queueMicrotask(() => setWeight(effectivePrice));
+  }, [data?.fooditemid, effectivePrice]);
  
   useEffect(() => {
-    const q = data.qty;
-    queueMicrotask(() => setQuantity(q));
-  }, [data.qty]);
+    queueMicrotask(() => setQuantity(data?.qty || 0));
+  }, [data?.qty]);
  
-  const weightOptions = [data?.offeprice > 0 ? data?.offeprice : data.fullprice, data?.halfprice];
+  const weightOptions = [effectivePrice, halfPrice].filter(w => w > 0);
  
   return (
-    // ✅ FIX: removed marginLeft:-80, gap:105, width:'245%' — these only "worked"
-    // by accident at one exact zoom level and broke everything else.
     <div style={{ width: "100%", padding: matches ? "20px" : "0", boxSizing: "border-box" }}>
  
-      {/* WEIGHT & QUANTITY SECTION */}
       <div
         style={{
           display: "flex",
@@ -61,38 +61,34 @@ export default function AddToCartComponent({ data, refresh, setRefresh }) {
           width: "100%",
         }}
       >
-        {/* WEIGHT SELECTION */}
         <div style={{ display: "flex", gap: 10 }}>
-          {weightOptions.map((w, i) =>
-            w > 0 ? (
-              <div
-                key={i}
-                onClick={() => setWeight(w)}
-                style={{
-                  cursor: "pointer",
-                  borderRadius: "50%",
-                  background: weight === w ? "rgb(13, 156, 67)" : "#fff",
-                  width: matches ? 45 : 50,
-                  height: matches ? 45 : 50,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: weight === w ? "#fff" : "#000",
-                  fontWeight: 400,
-                  fontSize: matches ? 13 : 14,
-                  transition: "0.2s",
-                  border: "1px solid gray",
-                  flexShrink: 0,
-                }}
-              >
-                ₹{w}
-              </div>
-            ) : null
-          )}
+          {weightOptions.map((w, i) => (
+            <div
+              key={i}
+              onClick={() => setWeight(w)}
+              style={{
+                cursor: "pointer",
+                borderRadius: "50%",
+                background: weight === w ? "rgb(13, 156, 67)" : "#fff",
+                width: matches ? 45 : 50,
+                height: matches ? 45 : 50,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: weight === w ? "#fff" : "#000",
+                fontWeight: 400,
+                fontSize: matches ? 13 : 14,
+                transition: "0.2s",
+                border: "1px solid gray",
+                flexShrink: 0,
+              }}
+            >
+              ₹{w}
+            </div>
+          ))}
         </div>
  
-        {/* QUANTITY SELECTOR */}
-        {quantity == 0 ? (
+        {quantity === 0 ? (
           <button
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
@@ -161,7 +157,6 @@ export default function AddToCartComponent({ data, refresh, setRefresh }) {
         )}
       </div>
  
-      {/* BUY NOW BUTTON */}
       <div style={{ display: 'flex', width: "100%", marginTop: 30 }}>
         <button
           style={{
@@ -180,8 +175,9 @@ export default function AddToCartComponent({ data, refresh, setRefresh }) {
         </button>
       </div>
  
-      {/* ✅ FIX: plain in-flow divider instead of position:absolute + magic marginTop % */}
       <div style={{ marginTop: 25, borderTop: "1px solid #cebdd8ff", width: "100%" }} />
     </div>
   );
-}
+});
+ 
+export default AddToCartComponent;

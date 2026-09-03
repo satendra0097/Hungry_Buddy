@@ -6,20 +6,18 @@ import AddToCartComponent from "../../purchaseinterface/AddToCartComponent";
 import ProductImageComponent from "../../purchaseinterface/ProductImageComponent";
 import ProductInfoComponent from "../../purchaseinterface/ProductInfoComponent";
 import ProductRateComponent from "../../purchaseinterface/ProductRateComponent";
-import SimilarAvailableComponent from "../../purchaseinterface/SimilarAvailableComponent";
 import ScrollProductList from "../../purchaseinterface/ScrollProductList";
 import { useParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { postData } from "@/app/services/FetchNodeServices";
 import FooterComponent from "../../component/FooterComponent";
 import Header from "../../component/Header";
 import { useSelector } from "react-redux";
  
-export default function ProductDetailComponent({ params }) {
+export default function ProductDetailComponent() {
  
-  params = useParams();
   const { id } = useParams();
-  var cart = useSelector((state) => state.cart);
+  const cart = useSelector((state) => state.cart);
  
   const [foodItem, setFoodItem] = useState({});
   const [categoryList, setCategoryList] = useState([]);
@@ -30,35 +28,33 @@ export default function ProductDetailComponent({ params }) {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
  
-  const fetchFoodDetails = async () => {
-    var cartkeys = Object.keys(cart);
-    var data = {};
-    if (cartkeys.includes(id)) {
-      data = cart[id];
-      setFoodItem(data);
+  const fetchFoodDetails = useCallback(async () => {
+    const numId = Number(id);
+    let data = {};
+    const cartItem = cart[numId];
+    if (cartItem) {
+      data = cartItem;
     } else {
-      var response = await postData("users/fetch_all_fooditems_by_id", { fooditemid: id });
-      data = response.data;
-      data['qty'] = 0;
-      setFoodItem(data);
+      const response = await postData("users/fetch_all_fooditems_by_id", { fooditemid: numId });
+      if (!response?.data) return;
+      data = { ...response.data, qty: 0 };
     }
-    await fetchAllFoodByCategoryId(data?.foodcategoryid);
-  };
+    setFoodItem(data);
+    if (data?.foodcategoryid) {
+      const catResponse = await postData("users/fetch_all_fooditems_by_category_id", { categoryid: data.foodcategoryid });
+      if (catResponse?.data) setCategoryList(catResponse.data);
+    }
+  }, [id, cart]);
  
-  const fetchAllFoodByCategoryId = async (cn) => {
-    var response = await postData("users/fetch_all_fooditems_by_category_id", { categoryid: cn });
-    setCategoryList(response.data);
-  };
+  const fetchAllFoodPicture = useCallback(async () => {
+    const response = await postData("pictures/fetch_all_picture", { foodid: Number(id) });
+    if (response?.data) setPictureList(response.data);
+  }, [id]);
  
-  const fetchAllFoodPicture = async () => {
-    var response = await postData("pictures/fetch_all_picture", { foodid: id });
-    setPictureList(response.data);
-  };
- 
-  useEffect(function () {
+  useEffect(() => {
     fetchFoodDetails();
     fetchAllFoodPicture();
-  }, [id]);
+  }, [fetchFoodDetails, fetchAllFoodPicture]);
  
   return (
     <div>
@@ -77,9 +73,6 @@ export default function ProductDetailComponent({ params }) {
       >
         <div style={{ padding: matches ? "15px" : "30px" }}>
  
-          {/* ✅ FIX: single CSS Grid instead of two hand-coded layouts full of
-              negative margin-% hacks. 1 column on mobile, 2 columns on desktop.
-              Grid automatically re-flows at any zoom/screen size. */}
           <div
             style={{
               display: "grid",
@@ -88,12 +81,10 @@ export default function ProductDetailComponent({ params }) {
               alignItems: "start",
             }}
           >
-            {/* LEFT COLUMN: product image */}
             <div>
               <ProductImageComponent data={foodItem} pictures={pictureList} />
             </div>
  
-            {/* RIGHT COLUMN: rating/price, add-to-cart card, similar items, info accordion */}
             <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
  
               <ProductRateComponent data={foodItem} />
@@ -112,7 +103,6 @@ export default function ProductDetailComponent({ params }) {
               {categoryList?.length > 0 && (
                 <div>
                   <ScrollProductList data={categoryList} />
-                  {/* <SimilarAvailableComponent data={categoryList} /> */}
                 </div>
               )}
  

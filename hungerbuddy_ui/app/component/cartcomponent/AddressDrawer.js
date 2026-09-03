@@ -3,8 +3,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import Divider from '@mui/material/Divider';
-import { useState } from 'react';
 import SelectAddress from './SelectAddress';
 
 export default function AddressDrawer({ drawerStatus, setDrawerStatus, setActiveAdd }) {
@@ -16,16 +14,6 @@ export default function AddressDrawer({ drawerStatus, setDrawerStatus, setActive
     setDrawerStatus(newOpen);
   };
 
-  const DrawerList = (
-    <Box sx={{ width: 400 }} role="presentation" onClick={toggleDrawer(false)}>
-      <div style={{ padding: '20px' }}>
-        <SelectAddress setActiveAdd={setActiveAdd} />
-
-
-      </div>
-    </Box>
-  );
-
   return (
     <div>
       <Drawer
@@ -33,7 +21,14 @@ export default function AddressDrawer({ drawerStatus, setDrawerStatus, setActive
         open={drawerStatus}
         onClose={toggleDrawer(false)}
       >
-        {DrawerList}
+        <Box sx={{ width: 400 }} role="presentation">
+          <div style={{ padding: '20px' }}>
+            <SelectAddress setActiveAdd={(addr) => {
+              setActiveAdd(addr);
+              setDrawerStatus(false);
+            }} />
+          </div>
+        </Box>
       </Drawer>
     </div>
   );

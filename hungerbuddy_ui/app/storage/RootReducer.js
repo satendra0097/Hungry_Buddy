@@ -1,99 +1,41 @@
-// app/storage/RootReducer.js
-
 const initailState = {
   cart: {},
   user: {},
-  studentList: [],       // ✅ Added: All students list
-  selectedStudent: null  // ✅ Added: Currently selected student
+  studentList: [],
+  selectedStudent: null
 };
 
 function RootReducer(state = initailState, action) {
   switch (action.type) {
-
-    // ========== YOUR EXISTING CODE - NO CHANGE ==========
     case "ADD_CART": {
-      const newCart = {
-        ...state.cart,
-        [action.payload[0]]: action.payload[1]
-      };
-
-      return {
-        cart: newCart,
-        user: state.user,
-        studentList: state.studentList,
-        selectedStudent: state.selectedStudent
-      };
+      const newCart = { ...state.cart, [action.payload[0]]: action.payload[1] };
+      if (typeof window !== 'undefined') localStorage.setItem("CART", JSON.stringify(newCart));
+      return { ...state, cart: newCart };
     }
-
     case "ADD_USER": {
-      const newUser = {
-        ...state.user,
-        [action.payload[0]]: action.payload[1]
-      };
-
-      console.log("NEW USER:", newUser);
-
-      localStorage.setItem(
-        "USER",
-        JSON.stringify(newUser)
-      );
-
-      return {
-        cart: state.cart,
-        user: newUser,
-        studentList: state.studentList,
-        selectedStudent: state.selectedStudent
-      };
+      const newUser = { ...state.user, [action.payload[0]]: action.payload[1] };
+      if (typeof window !== 'undefined') localStorage.setItem("USER", JSON.stringify(newUser));
+      return { ...state, user: newUser };
     }
-
     case "DELETE_CART": {
       const newCart = { ...state.cart };
       delete newCart[action.payload[0]];
-
-      return {
-        cart: newCart,
-        user: state.user,
-        studentList: state.studentList,
-        selectedStudent: state.selectedStudent
-      };
+      if (typeof window !== 'undefined') localStorage.setItem("CART", JSON.stringify(newCart));
+      return { ...state, cart: newCart };
     }
-
     case "EMPTY_CART":
-      return {
-        cart: {},
-        user: state.user,
-        studentList: state.studentList,
-        selectedStudent: state.selectedStudent
-      };
-
-    // ========== ✅ NEW: STUDENT ACTIONS ==========
-    
-    case "SET_STUDENT_LIST": {
-      return {
-        cart: state.cart,
-        user: state.user,
-        studentList: action.payload || [],
-        selectedStudent: state.selectedStudent
-      };
-    }
-
-    case "SELECT_STUDENT": {
-      return {
-        cart: state.cart,
-        user: state.user,
-        studentList: state.studentList,
-        selectedStudent: action.payload || null
-      };
-    }
-
+      if (typeof window !== 'undefined') localStorage.setItem("CART", JSON.stringify({}));
+      return { ...state, cart: {} };
+    case "SET_STUDENT_LIST":
+      return { ...state, studentList: action.payload || [] };
+    case "SELECT_STUDENT":
+      return { ...state, selectedStudent: action.payload || null };
     case "USER_LOGOUT":
-      return {
-        cart: {},
-        user: {},
-        studentList: [],
-        selectedStudent: null
-      };
-
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("CART", JSON.stringify({}));
+        localStorage.setItem("USER", JSON.stringify({}));
+      }
+      return { cart: {}, user: {}, studentList: [], selectedStudent: null };
     default:
       return state;
   }

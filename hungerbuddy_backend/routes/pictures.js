@@ -3,105 +3,44 @@ var router = express.Router();
 var pool = require('./pool');
 var upload = require("./multer");
 
-router.post(
-  "/submit_picture",
-  upload.any(),
-  function (req, res, next) {
-     
-    try {
-      console.log(req.body);
-      var files=req.files.map((item)=>{
-        return item.filename
-      })
-     
-      pool.query(
-        "insert into morepictures(categoryid, fooditemid, picture, createdate, createtime, userid)values(?,?,?,?,?,?)",
-        [
-          req.body.categoryid,
-          req.body.fooditemid,
-           files+"",
-          req.body.createddate,
-          req.body.createdtime,
-          req.body.userid,
-         
-          req.body.createddate,
-
-        ],
-        function (error, result) {
-          if (error) {
-            console.log(error);
-            res.status(500).json({
-              status: false,
-              message: "error in database contach to the admin",
-            });
-          } else {
-            res
-              .status(200)
-              .json({ status: true, message: "Picture Uploaded Successfully" });
-          }
+router.post("/submit_picture", upload.any(), function (req, res) {
+  try {
+    var files = req.files.map((item) => item.filename);
+    pool.query(
+      "insert into morepictures(categoryid, fooditemid, picture, createdate, createtime, userid) values(?,?,?,?,?,?)",
+      [req.body.categoryid, req.body.fooditemid, files + "", req.body.createddate, req.body.createdtime, req.body.userid],
+      function (error, result) {
+        if (error) {
+          return res.status(500).json({ status: false, message: "Database Error" });
         }
-      );
-    } catch (e) {
-      res.status(500).json({
-        status: false,
-        message: "error in database contach to the admin",
-      });
-    }
+        res.status(200).json({ status: true, message: "Picture Uploaded Successfully" });
+      }
+    );
+  } catch (e) {
+    res.status(500).json({ status: false, message: "Critical Error" });
   }
-);
-
+});
 
 router.get("/fetch_fooditem/:categoryid", function (req, res) {
-  const categoryid = req.params.categoryid;
-
-  pool.query(
-    "SELECT * FROM fooditems WHERE foodcategoryid = ?",
-    [categoryid],
-    function (error, result) {
-      if (error) {
-        console.log(error);
-        res.status(500).json({
-          status: false,
-          message: "Database Error Please Contact Backend Team...",
-        });
-      } else {
-        res
-          .status(200)
-          .json({ status: true, message: "Success", data: result });
-      }
+  pool.query("SELECT * FROM fooditems WHERE foodcategoryid = ?", [req.params.categoryid], function (error, result) {
+    if (error) {
+      return res.status(500).json({ status: false, message: "Database Error" });
     }
-  );
+    res.status(200).json({ status: true, message: "Success", data: result });
+  });
 });
 
-
-router.post("/fetch_all_picture", function (req, res, next) {
-  console.log(req.body)
+router.post("/fetch_all_picture", function (req, res) {
   try {
-    pool.query("select * from morepictures where fooditemid=?",[req.body.foodid], function (error, result) {
+    pool.query("select * from morepictures where fooditemid=?", [req.body.foodid], function (error, result) {
       if (error) {
-        console.log(error);
-        res.status(500).json({
-          status: false,
-          message: "error in database contach to the admin",
-        });
-      } else {
-        res
-          .status(200)
-          .json({
-            data: result[0],
-            status: true,
-            message: "Category fetched Successfully",
-          });
+        return res.status(500).json({ status: false, message: "Database Error" });
       }
+      res.status(200).json({ data: result[0], status: true, message: "Success" });
     });
   } catch (e) {
-    res.status(500).json({
-      status: false,
-      message: "error in database contach to the admin",
-    });
+    res.status(500).json({ status: false, message: "Critical Error" });
   }
 });
-
-
 
 module.exports = router;
