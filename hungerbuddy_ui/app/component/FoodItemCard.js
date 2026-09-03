@@ -4,7 +4,7 @@ import styles from './FoodItemCard.module.css'
 import { serverURL } from '../services/FetchNodeServices';
 import { useRouter } from 'next/navigation';
 
-export default function FoodItemCard({ data }) {
+export default function FoodItemCard({ data, searchQuery }) {
   const mycolor = ["#ffeaa7", "#fabla0", "#dff9fb", "#686de0", "#22a6b3", "#78e08f", "#fa983a", "#6a89cc", "#f8c291"]
 
 
@@ -82,7 +82,13 @@ export default function FoodItemCard({ data }) {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-        {showFood()}
+        {data?.length === 0 && searchQuery ? (
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: '#666', fontSize: 16, width: '100%' }}>
+            No food items found for &quot;{searchQuery}&quot;
+          </div>
+        ) : (
+          showFood()
+        )}
       </div>
     </div>
   );

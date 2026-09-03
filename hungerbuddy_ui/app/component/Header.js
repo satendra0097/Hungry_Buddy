@@ -8,7 +8,7 @@ import CategoryComponent from "./CategoryComponent";
 import { getData } from "../services/FetchNodeServices"
 import User from "./User";
 import { useSelector } from "react-redux";
-export default function Header({ dataRef, foodList, setFoodList, fetchAllFoodItems }) {
+export default function Header({ dataRef, foodList, setFoodList, fetchAllFoodItems, searchQuery, setSearchQuery }) {
   const [categoryList, setCategoryList] = useState([])
   var cart = useSelector((state) => state.cart)
   console.log("cart", cart)
@@ -69,7 +69,7 @@ export default function Header({ dataRef, foodList, setFoodList, fetchAllFoodIte
 
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center', marginBottom: '40' }} >
-        <SearchBar />
+        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       </div>
       <div style={{ width: '100%', background: '#f1eeeeff', justifyContent: 'center', alignItems: 'center' }}>
         <CategoryComponent dataRef={dataRef} data={categoryList} foodList={foodList} setFoodList={setFoodList}/>

@@ -48,6 +48,48 @@ router.post("/submit_address", function (req, res) {
   );
 });
 
+router.post("/edit_address", function (req, res) {
+  pool.query(
+    `UPDATE user_address
+     SET pincode=?,
+         house_no=?,
+         floor_no=?,
+         tower_no=?,
+         building_name=?,
+         address=?,
+         landmark_area=?,
+         receiver_name=?,
+         receiver_phone=?
+     WHERE id=?`,
+    [
+      req.body.pincode,
+      req.body.house_no,
+      req.body.floor_no,
+      req.body.tower_no,
+      req.body.building_name,
+      req.body.address,
+      req.body.landmark_area,
+      req.body.receiver_name,
+      req.body.receiver_phone,
+      req.body.id
+    ],
+    function (error, result) {
+      if (error) {
+        console.log(error);
+        return res.json({
+          status: false,
+          message: "Database Error",
+        });
+      }
+
+      res.json({
+        status: true,
+        message: "Address Updated Successfully",
+      });
+    }
+  );
+});
+
 router.post("/set_active", function (req, res) {
   pool.query(
     `Update user_address set active = ? where id = ?`, [req.body.active, req.body.id],

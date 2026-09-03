@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ export default function AddressDrawer() {
   const [loading, setLoading] = useState(true);
   const [addresses, setAddresses] = useState([]);
   const [error, setError] = useState(null);
+  const [editId, setEditId] = useState(null);
 
   const [formData, setFormData] = useState({
     pincode: "",
@@ -34,24 +35,49 @@ export default function AddressDrawer() {
         setFormData((f) => ({ ...f, enrollmentno: Object.values(user)[0]?.enrollmentno || "" }));
       }
     } catch (e) {}
-    fetchAddresses();
+
+    const params = new URLSearchParams(window.location.search);
+    const eid = params.get("edit");
+    if (eid) {
+      setEditId(eid);
+      fetchAddresses(eid);
+    } else {
+      fetchAddresses();
+    }
   }, []);
 
-  const fetchAddresses = async () => {
+  const fetchAddresses = async (editIdToFill) => {
     setLoading(true);
     setError(null);
     try {
       const response = await getData("address/fetch_all_user_address");
-      console.log("API Response:", response.data);
+      console.log("API Response:", response);
 
-      if (response.data.status) {
-        setAddresses(response.data.data);
-        // Auto fill first address in form fields
-        if (response.data.data.length > 0) {
+      if (response.status) {
+        const list = response.data || [];
+        setAddresses(list);
 
+        // Edit mode: auto fill form from database record
+        if (editIdToFill) {
+          const addr = list.find((a) => String(a.id) === String(editIdToFill));
+          if (addr) {
+            setFormData((f) => ({
+              ...f,
+              pincode: addr.pincode || "",
+              house_no: addr.house_no || "",
+              floor_no: addr.floor_no || "",
+              tower_no: addr.tower_no || "",
+              building_name: addr.building_name || "",
+              address: addr.address || "",
+              landmark_area: addr.landmark_area || "",
+              receiver_name: addr.receiver_name || "",
+              receiver_phone: addr.receiver_phone || "",
+              enrollmentno: addr.enrollmentno || f.enrollmentno,
+            }));
+          }
         }
       } else {
-        setError(response.data.message || "Failed to fetch addresses");
+        setError(response.message || "Failed to fetch addresses");
       }
     } catch (error) {
       console.error("Error fetching addresses:", error);
@@ -74,10 +100,19 @@ export default function AddressDrawer() {
 
   const handleSave = async () => {
     try {
-      const response = await postData("address/submit_address", formData);
+      const isEdit = Boolean(editId);
+      const payload = isEdit ? { ...formData, id: editId } : formData;
+      const response = await postData(
+        isEdit ? "address/edit_address" : "address/submit_address",
+        payload
+      );
 
       if (response.status) {
         alert(response.message);
+        if (isEdit) {
+          router.back();
+          return;
+        }
         fetchAddresses();
         setFormData({
           pincode: "",
@@ -92,7 +127,7 @@ export default function AddressDrawer() {
           enrollmentno: "",
         });
       } else {
-        alert(response.data.message);
+        alert(response.message);
       }
     } catch (error) {
       console.log("Full Error:", error);
@@ -112,7 +147,7 @@ export default function AddressDrawer() {
     <div className={styles.pageContainer}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h1 className={styles.title}>Add New Address</h1>
+          <h1 className={styles.title}>{editId ? "Edit Address" : "Add New Address"}</h1>
 
           <IconButton onClick={handleClose} edge="end">
             <CloseIcon sx={{ fontSize: 28, color: "#005a8d" }} />
@@ -146,7 +181,7 @@ export default function AddressDrawer() {
                     variant="standard"
                     fullWidth
                     name="pincode"
-
+                    value={formData.pincode}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -157,7 +192,7 @@ export default function AddressDrawer() {
                     variant="standard"
                     fullWidth
                     name="house_no"
-
+                    value={formData.house_no}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -168,7 +203,7 @@ export default function AddressDrawer() {
                     variant="standard"
                     fullWidth
                     name="floor_no"
-
+                    value={formData.floor_no}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -179,7 +214,7 @@ export default function AddressDrawer() {
                     variant="standard"
                     fullWidth
                     name="tower_no"
-
+                    value={formData.tower_no}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -190,7 +225,7 @@ export default function AddressDrawer() {
                     variant="standard"
                     fullWidth
                     name="building_name"
-
+                    value={formData.building_name}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -201,7 +236,7 @@ export default function AddressDrawer() {
                     variant="standard"
                     fullWidth
                     name="address"
-
+                    value={formData.address}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -212,7 +247,7 @@ export default function AddressDrawer() {
                     variant="standard"
                     fullWidth
                     name="landmark_area"
-
+                    value={formData.landmark_area}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -229,7 +264,7 @@ export default function AddressDrawer() {
                     variant="standard"
                     fullWidth
                     name="receiver_name"
-
+                    value={formData.receiver_name}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -240,7 +275,7 @@ export default function AddressDrawer() {
                     variant="standard"
                     fullWidth
                     name="receiver_phone"
-
+                    value={formData.receiver_phone}
                     onChange={handleChange}
                   />
                 </Grid>
@@ -266,7 +301,7 @@ export default function AddressDrawer() {
                 },
               }}
             >
-              Save & Proceed
+              {editId ? "Update Address" : "Save & Proceed"}
             </Button>
           </>
         )}

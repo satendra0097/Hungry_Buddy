@@ -3,6 +3,7 @@
 .shell {
   min-height: 100vh;
   background: #f5f7fa;
+  
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
@@ -123,21 +124,24 @@
 }
 
 .heroCover {
-  height: 150px;
-  background: linear-gradient(120deg, #16344f 0%, #2980b9 65%, #6cb2e0 100%);
+  height: 160px;
+  background:
+    radial-gradient(circle at 88% 18%, rgba(249, 115, 22, 0.35) 0, transparent 42%),
+    radial-gradient(circle at 10% 85%, rgba(108, 178, 224, 0.30) 0, transparent 45%),
+    linear-gradient(120deg, #0e2a43 0%, #1d5a8a 55%, #2980b9 100%);
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .heroCover::after {
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 85% 30%, rgba(255,255,255,0.20) 0, transparent 40%),
-    radial-gradient(circle at 15% 80%, rgba(255,255,255,0.10) 0, transparent 35%);
+  background: radial-gradient(circle at 85% 30%, rgba(255,255,255,0.18) 0, transparent 40%);
+  pointer-events: none;
 }
 
 .coverContent {
@@ -155,8 +159,8 @@
 }
 
 .coverLabel {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: clamp(0.66rem, 1.6vw, 0.78rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.22em;
@@ -164,13 +168,14 @@
 
 .coverName {
   color: #ffffff;
-  font-size: 1.7rem;
+  font-size: clamp(1.2rem, 3.5vw, 1.9rem);
   font-weight: 800;
-  text-shadow: 0 2px 8px rgba(13, 27, 42, 0.35);
+  text-shadow: 0 2px 10px rgba(13, 27, 42, 0.4);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+  
 }
 
 .heroContent {
@@ -186,8 +191,10 @@
 .avatar {
   width: 104px;
   height: 104px;
-  border-radius: 28px;
-  background: linear-gradient(135deg, #20618f, #2980b9);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,0.28) 0, transparent 45%),
+    linear-gradient(135deg, #f97316, #ea580c);
   color: #fff;
   font-size: 2.2rem;
   font-weight: 800;
@@ -195,7 +202,8 @@
   align-items: center;
   justify-content: center;
   border: 5px solid #fff;
-  box-shadow: 0 10px 24px rgba(41, 128, 185, 0.35);
+  outline: 3px solid rgba(249, 115, 22, 0.35);
+  box-shadow: 0 12px 26px rgba(234, 88, 12, 0.35);
   flex-shrink: 0;
 }
 
@@ -332,6 +340,11 @@
 .statBlue { border-top-color: #2980b9; }
 .statOrange { border-top-color: #e17055; }
 .statPurple { border-top-color: #6c5ce7; }
+
+.statGreen .statValue { color: #00997a; }
+.statBlue .statValue { color: #2980b9; }
+.statOrange .statValue { color: #e17055; }
+.statPurple .statValue { color: #6c5ce7; }
 
 .statIcon {
   width: 52px;
@@ -805,25 +818,25 @@
   .contentGrid {
     grid-template-columns: 1fr;
   }
-
-  .heroInfo h1,
-  .coverName {
-    font-size: 1.45rem;
-  }
 }
 
 /* Tablet portrait / large mobile - sidebar becomes top bar */
 @media (max-width: 900px) {
   .sidebar {
-    position: static;
+    position: sticky;
+    top: 0;
     width: 100%;
     height: auto;
     flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
-    padding: 14px 16px;
-    box-shadow: 0 4px 16px rgba(13, 27, 42, 0.15);
+    padding: 12px 16px;
+    background: rgba(223, 230, 233, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 18px rgba(13, 27, 42, 0.15);
+    z-index: 100;
   }
 
   .brand {
@@ -896,16 +909,11 @@
   }
 
   .heroCover {
-    height: 120px;
+    height: 128px;
   }
 
   .coverLabel {
-    font-size: 0.68rem;
     letter-spacing: 0.18em;
-  }
-
-  .coverName {
-    font-size: 1.25rem;
   }
 
   .heroContent {
@@ -917,7 +925,7 @@
     width: 84px;
     height: 84px;
     font-size: 1.7rem;
-    border-radius: 22px;
+    outline-width: 2px;
   }
 
   .heroInfo {
@@ -1018,13 +1026,64 @@
     gap: 6px;
   }
 
-  .coverName {
-    font-size: 1.05rem;
-  }
-
   .avatar {
     width: 72px;
     height: 72px;
     font-size: 1.4rem;
   }
+}
+
+
+/* Dropdown Styles - Add these to your existing CSS */
+.selectInput {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 11px;
+  font-size: 0.92rem;
+  color: #10233c;
+  background: #f8fafc;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  font-family: inherit;
+  box-sizing: border-box;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px;
+}
+
+.selectInput:focus {
+  border-color: #2980b9;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(41, 128, 185, 0.12);
+}
+
+.selectInput:disabled {
+  background-color: #f1f5f9;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.selectInput option {
+  padding: 8px;
+}
+
+.selectInput option:checked {
+  background-color: #2980b9;
+  color: white;
+}
+
+.disabledInput {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 11px;
+  font-size: 0.92rem;
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: not-allowed;
+  box-sizing: border-box;
 }

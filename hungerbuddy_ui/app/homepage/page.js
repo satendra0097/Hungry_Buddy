@@ -18,6 +18,7 @@ export default function HomePage() {
   const [snacksList, setSnacksList] = useState([])
   const [drinkList, setDrinkList] = useState([])
   const [foodList, setFoodList] = useState([])
+  const [searchQuery, setSearchQuery] = useState("")
   
 // var navigate=useRouter()
 
@@ -42,9 +43,15 @@ export default function HomePage() {
     queueMicrotask(() => fetchHomepageData());
   }, [])
 
+  const filteredFoodList = searchQuery.trim()
+    ? foodList.filter((item) =>
+        item.fooditemname.toLowerCase().includes(searchQuery.toLowerCase().trim())
+      )
+    : foodList;
+
   return (
     <div>
-      <Header dataRef={aboutRef} foodList={foodList} setFoodList={setFoodList} />
+      <Header dataRef={aboutRef} foodList={foodList} setFoodList={setFoodList} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       <div style={{ width: '100%', background: '#f1eeeeff' }}>
         <SnacksComponent data={snacksList} />
@@ -55,7 +62,7 @@ export default function HomePage() {
       </div>
 
       <div ref={aboutRef} >
-        <FoodItemCard data={foodList} />
+        <FoodItemCard data={filteredFoodList} searchQuery={searchQuery} />
       </div>
 
 

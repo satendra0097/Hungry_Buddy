@@ -13,13 +13,13 @@ router.post(
       pool.query(
         "insert into orders(delivery_status, payment_type,paymentid)values(?,?,?)",
         [
-            
-           
-         
-            req.body.delivery_status,
-            req.body.payment_type,
-            req.body.paymentid,
-           
+
+
+
+          req.body.delivery_status,
+          req.body.payment_type,
+          req.body.paymentid,
+
         ],
         function (error, result) {
           if (error) {
@@ -31,7 +31,7 @@ router.post(
           } else {
             res
               .status(200)
-              .json({ status: true,orderid: result.insertId, message: "Order Added Successfully" });
+              .json({ status: true, orderid: result.insertId, message: "Order Added Successfully" });
           }
         }
       );

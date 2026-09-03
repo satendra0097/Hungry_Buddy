@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import { getData, postData, serverURL } from '../services/FetchNodeServices';
 import { setStudentList, selectStudent } from '../storage/actions';
 import styles from './profile.module.css';
-import { color } from 'framer-motion';
 
 const StudentProfile = () => {
   const dispatch = useDispatch();
@@ -30,6 +29,13 @@ const StudentProfile = () => {
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [ordersError, setOrdersError] = useState(null);
 
+  // State for dropdown options
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [filteredCities, setFilteredCities] = useState([]);
+  const [statesLoading, setStatesLoading] = useState(false);
+  const [citiesLoading, setCitiesLoading] = useState(false);
+
   useEffect(() => {
     try {
       const raw = localStorage.getItem('USER');
@@ -42,12 +48,79 @@ const StudentProfile = () => {
     }
   }, []);
 
+  // Fetch states on component mount
+  useEffect(() => {
+    fetchStates();
+  }, []);
+
+  const fetchStates = async () => {
+    try {
+      setStatesLoading(true);
+      console.log('📡 Fetching states...');
+      console.log('🔗 Server URL:', serverURL);
+      
+      const response = await getData('statecity/fetch_states');
+      console.log('📥 States response:', response);
+      
+      if (response && response.status) {
+        setStates(response.data || []);
+        console.log('✅ States loaded:', response.data?.length || 0);
+      } else {
+        console.error('❌ Failed to fetch states:', response?.message);
+      }
+    } catch (err) {
+      console.error('❌ Error fetching states:', err);
+    } finally {
+      setStatesLoading(false);
+    }
+  };
+
+  // Fetch cities when state changes
+  useEffect(() => {
+    if (formData.current_state) {
+      fetchCitiesByState(formData.current_state);
+    } else {
+      setFilteredCities([]);
+      setCities([]);
+    }
+  }, [formData.current_state]);
+
+  const fetchCitiesByState = async (stateId) => {
+    if (!stateId) {
+      console.log('⚠️ No state ID provided');
+      return;
+    }
+
+    try {
+      setCitiesLoading(true);
+      console.log(`📡 Fetching cities for state ID: ${stateId}`);
+      console.log(`🔗 Endpoint: ${serverURL}/statecity/fetch_cities`);
+      
+      const response = await postData('statecity/fetch_cities', { sid: stateId });
+      console.log('📥 Cities response:', response);
+      
+      if (response && response.status) {
+        setCities(response.data || []);
+        setFilteredCities(response.data || []);
+        console.log('✅ Cities loaded:', response.data?.length || 0);
+      } else {
+        console.error('❌ Failed to fetch cities:', response?.message);
+        setFilteredCities([]);
+      }
+    } catch (err) {
+      console.error('❌ Error fetching cities:', err);
+      setFilteredCities([]);
+    } finally {
+      setCitiesLoading(false);
+    }
+  };
+
   const fetchAllStudents = async () => {
     try {
       setLoading(true);
       const response = await getData('student/fetch_all_student');
 
-      if (response.status) {
+      if (response && response.status) {
         dispatch(setStudentList(response.data));
         if (response.data && response.data.length > 0) {
           let target = response.data[0];
@@ -60,10 +133,15 @@ const StudentProfile = () => {
           dispatch(selectStudent(target));
           setFormData(target);
           setSearchEnrollment(target.enrollmentno || '');
+          
+          // Fetch cities for the selected student's state
+          if (target.current_state) {
+            await fetchCitiesByState(target.current_state);
+          }
         }
         setError(null);
       } else {
-        setError(response.message || 'Failed to fetch students');
+        setError(response?.message || 'Failed to fetch students');
       }
     } catch (err) {
       console.error('Error:', err);
@@ -97,7 +175,7 @@ const StudentProfile = () => {
         enrollmentno: enrollment
       });
 
-      if (res.status) {
+      if (res && res.status) {
         const grouped = {};
         (res.data || []).forEach((row) => {
           if (!grouped[row.orderid]) {
@@ -116,7 +194,7 @@ const StudentProfile = () => {
         setOrders(Object.values(grouped));
         ordersFetchedFor.current = String(enrollment);
       } else {
-        setOrdersError(res.message || 'Failed to load orders');
+        setOrdersError(res?.message || 'Failed to load orders');
       }
     } catch (e) {
       console.error('Orders error:', e);
@@ -169,14 +247,18 @@ const StudentProfile = () => {
         enrollmentno: searchEnrollment.trim()
       });
 
-      if (response.status) {
+      if (response && response.status) {
         dispatch(selectStudent(response.data));
         setFormData(response.data);
         setIsEditing(false);
         setError(null);
+        // Fetch cities for the selected student's state
+        if (response.data.current_state) {
+          await fetchCitiesByState(response.data.current_state);
+        }
         alert('✅ Student found: ' + response.data.studentname);
       } else {
-        alert('❌ ' + (response.message || 'Student not found'));
+        alert('❌ ' + (response?.message || 'Student not found'));
       }
     } catch (err) {
       console.error('Error:', err);
@@ -186,13 +268,17 @@ const StudentProfile = () => {
     }
   };
 
-  const handleStudentSelect = (studentId) => {
+  const handleStudentSelect = async (studentId) => {
     const student = studentList.find(s => s.studentid === studentId);
     if (student) {
       dispatch(selectStudent(student));
       setFormData(student);
       setIsEditing(false);
       setSearchEnrollment(student.enrollmentno || '');
+      // Fetch cities for the selected student's state
+      if (student.current_state) {
+        await fetchCitiesByState(student.current_state);
+      }
     }
   };
 
@@ -210,6 +296,10 @@ const StudentProfile = () => {
     setIsEditing(false);
     setFormData(selectedStudent);
     setSearchEnrollment(selectedStudent?.enrollmentno || '');
+    // Reset cities for the selected student's state
+    if (selectedStudent?.current_state) {
+      fetchCitiesByState(selectedStudent.current_state);
+    }
   };
 
   const handleSave = async () => {
@@ -237,7 +327,7 @@ const StudentProfile = () => {
 
       const response = await postData('student/edit_students', updateData);
 
-      if (response.status) {
+      if (response && response.status) {
         const updatedList = studentList.map(student =>
           student.enrollmentno === formData.enrollmentno ? formData : student
         );
@@ -246,7 +336,7 @@ const StudentProfile = () => {
         setIsEditing(false);
         alert('✅ Student updated successfully!');
       } else {
-        alert('❌ ' + (response.message || 'Failed to update student'));
+        alert('❌ ' + (response?.message || 'Failed to update student'));
       }
     } catch (err) {
       console.error('Error updating student:', err);
@@ -271,6 +361,20 @@ const StudentProfile = () => {
   const totalItems = orders.reduce((sum, o) => sum + o.items.reduce((s, i) => s + (Number(i.qty) || 0), 0), 0);
 
   const studentData = formData;
+
+  // Helper function to get state name by ID
+  const getStateName = (stateId) => {
+    if (!stateId) return '';
+    const state = states.find(s => String(s.stateid) === String(stateId));
+    return state ? state.statename : '';
+  };
+
+  // Helper function to get city name by ID
+  const getCityName = (cityId) => {
+    if (!cityId) return '';
+    const city = cities.find(c => String(c.cityid) === String(cityId));
+    return city ? city.cityname : '';
+  };
 
   const renderStatusBadge = (status) => {
     const s = String(status || '').toLowerCase();
@@ -324,7 +428,6 @@ const StudentProfile = () => {
               </div>
             ) : !selectedStudent || studentList.length === 0 ? (
               <div className={styles.centerCard}>
-              
                 <h2>No students found</h2>
                 <button onClick={fetchAllStudents} className={styles.primaryBtn}>Refresh</button>
               </div>
@@ -332,31 +435,20 @@ const StudentProfile = () => {
               <>
                 <section className={styles.hero}>
                   <div className={styles.heroCover}>
-                   <div className={styles.coverContent}>
-  <h1 style={{ 
-    color: '#fff', 
-    fontSize: '3rem',        // ✅ Title ka size badhaya
-    fontWeight: '700',
-    
-  }}>
-    Student Profile
-  </h1>
-  <h2 style={{ 
-    color: '#FFF', 
-    fontSize: '2.5rem',        // ✅ Name ka size badhaya
-    fontWeight: '700'
-  }}>
-    {studentData.studentname || 'Student'}
-  </h2>
-</div>
+                    <div className={styles.coverContent}>
+                      <span style={{color:'#fff',fontSize:30,fontWeight:'bold'}}>STUDENT PROFILE</span>
+                      <h1 className={styles.coverName}>
+                        {studentData.studentname || 'Student'}
+                      </h1>
+                    </div>
                   </div>
                   <div className={styles.heroContent}>
                     <div className={styles.avatar}>{getInitials(studentData.studentname)}</div>
                     <div className={styles.heroInfo}>
                       <span className={styles.enrollChip}>🎓 {studentData.enrollmentno}</span>
                       <div className={styles.heroTags}>
-                        {(studentData.city_name || studentData.current_city) && (
-                          <span className={styles.tag}>📍 {studentData.city_name || studentData.current_city}</span>
+                        {(studentData.current_city || studentData.city_name) && (
+                          <span className={styles.tag}>📍 {getCityName(studentData.current_city) || studentData.city_name || studentData.current_city}</span>
                         )}
                         {studentData.gender && <span className={styles.tag}>{studentData.gender}</span>}
                         {studentData.mobileno && <span className={styles.tag}>📞 {studentData.mobileno}</span>}
@@ -463,29 +555,70 @@ const StudentProfile = () => {
                       <div className={styles.fieldGridSingle}>
                         <label className={styles.fieldBox}>
                           <span>State</span>
-                          <input
-                            type="text"
-                            name="current_state"
-                            value={isEditing ? studentData.current_state || '' : studentData.state_name || studentData.current_state || ''}
-                            onChange={handleInputChange}
-                            disabled={!isEditing}
-                            placeholder="Enter State"
-                          />
-                          {!isEditing && studentData.state_name && (
-                            <small>ID: {studentData.current_state}</small>
+                          {isEditing ? (
+                            <>
+                              <select
+                                name="current_state"
+                                value={studentData.current_state || ''}
+                                onChange={handleInputChange}
+                                className={styles.selectInput}
+                              >
+                                <option value="">Select State</option>
+                                {states.map((state) => (
+                                  <option key={state.stateid} value={state.stateid}>
+                                    {state.statename}
+                                  </option>
+                                ))}
+                              </select>
+                              {statesLoading && <small>Loading states...</small>}
+                              {!statesLoading && states.length === 0 && (
+                                <small style={{color: '#e53e3e'}}>
+                                  ⚠️ No states found. Please check API connection.
+                                </small>
+                              )}
+                            </>
+                          ) : (
+                            <input
+                              type="text"
+                              value={getStateName(studentData.current_state) || studentData.state_name || studentData.current_state || ''}
+                              disabled
+                              className={styles.disabledInput}
+                            />
                           )}
                         </label>
 
                         <label className={styles.fieldBox}>
                           <span>City</span>
-                          <input
-                            type="text"
-                            name="current_city"
-                            value={isEditing ? studentData.current_city || '' : studentData.city_name || studentData.current_city || ''}
-                            onChange={handleInputChange}
-                            disabled={!isEditing}
-                            placeholder="Enter City"
-                          />
+                          {isEditing ? (
+                            <>
+                              <select
+                                name="current_city"
+                                value={studentData.current_city || ''}
+                                onChange={handleInputChange}
+                                className={styles.selectInput}
+                                disabled={!studentData.current_state || citiesLoading}
+                              >
+                                <option value="">Select City</option>
+                                {filteredCities.map((city) => (
+                                  <option key={city.cityid} value={city.cityid}>
+                                    {city.cityname}
+                                  </option>
+                                ))}
+                              </select>
+                              {citiesLoading && <small>Loading cities...</small>}
+                              {!citiesLoading && filteredCities.length === 0 && studentData.current_state && (
+                                <small style={{color: '#e53e3e'}}>⚠️ No cities found for this state</small>
+                              )}
+                              {!studentData.current_state && <small>Please select a state first</small>}
+                            </>
+                          ) : (
+                            <input
+                              type="text"
+                              value={getCityName(studentData.current_city) || studentData.city_name || studentData.current_city || ''}
+                              disabled
+                              className={styles.disabledInput}
+                            />
+                          )}
                           {!isEditing && studentData.city_name && (
                             <small>ID: {studentData.current_city}</small>
                           )}
@@ -593,7 +726,6 @@ const StudentProfile = () => {
                       {order.items.map((item, idx) => (
                         <div key={idx} className={styles.orderItem}>
                           <div className={styles.itemImgWrap}>
-                           
                             {item.picture && (
                               <img
                                 className={styles.itemImg}

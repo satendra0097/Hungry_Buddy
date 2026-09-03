@@ -40,3 +40,53 @@
     background-color: #c5c5c5;
     margin: 0 8px;
 }
+
+.clearBtn {
+    cursor: pointer;
+    font-size: 16px;
+    color: #999;
+    flex-shrink: 0;
+    padding: 0 4px;
+}
+
+.clearBtn:hover {
+    color: #333;
+}
+
+.micBtn {
+    flex-shrink: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.micBtn:hover {
+    background-color: #f0f0f0;
+}
+
+.listening {
+    background-color: #ffe0e0;
+    animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+    0% { background-color: #ffe0e0; }
+    50% { background-color: #ffb3b3; }
+    100% { background-color: #ffe0e0; }
+}
+
+.voiceStatus {
+    font-size: 11px;
+    color: #666;
+    padding: 4px 12px;
+    margin-top: 4px;
+    transition: color 0.3s ease;
+}
+
+.voiceListening {
+    color: #e74c3c;
+    font-weight: 500;
+}
